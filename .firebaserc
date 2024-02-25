@@ -6,7 +6,7 @@
         "bpm-web-forms": {
             "hosting": {
                 "imba-v1-learn": [
-                    "imba-v1-learn.web.app"
+                    "imba-v1-learn"
                 ]
             }
         }
