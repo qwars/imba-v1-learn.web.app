@@ -3,7 +3,7 @@ services:
   web-application:
     build: .
     image: node:18-alpine
-    container_name: imba-v1-support.web.app
+    container_name: imba-v1-learn.web.app
     env_file:
       - .env
     ports:
