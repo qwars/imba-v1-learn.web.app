@@ -1,0 +1,17 @@
+{
+    "hosting": {
+	"target": "imba-v1-learn",
+	"public": "public",
+	"ignore": [
+	    "firebase.json",
+	    "**/.*",
+	    "**/node_modules/**"
+	],
+	"rewrites": [
+	    { "source": "**", "destination": "/index.html" }
+	]
+    },
+    "storage": {
+        "rules": "storage.rules"
+    }    
+}

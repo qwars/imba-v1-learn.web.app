@@ -1,0 +1,14 @@
+{
+    "projects": {
+	"default": "bpm-web-forms"
+    },
+    "targets": {
+        "bpm-web-forms": {
+            "hosting": {
+                "imba-v1-learn": [
+                    "imba-v1-learn.web.app"
+                ]
+            }
+        }
+    }
+}

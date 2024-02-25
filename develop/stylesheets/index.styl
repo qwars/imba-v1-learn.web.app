@@ -1,0 +1,27 @@
+@import './animations'
+@import './themes/light-scheme-theme.styl'
+@import './themes/dark-scheme-theme.styl'
+
+@media (prefers-color-scheme: light)
+	:root
+		{root-light}
+
+@media (prefers-color-scheme: dark)
+	:root
+		{root-light}
+		{root-dark}
+
+html[data-theme="dark"]
+	{root-light}
+	{root-dark}
+
+html[data-theme="light"]
+	{root-light}
+
+
+@import './fonts/index.styl'
+@import './tags/index.styl'
+@import './form/index.styl'
+
+*
+	box-sizing: border-box

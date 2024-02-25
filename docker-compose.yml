@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+  web-application:
+    build: .
+    image: node:18-alpine
+    container_name: imba-v1-support.web.app
+    env_file:
+      - .env
+    ports:
+      - 9090:9090
+    volumes:
+      - ./develop:/usr/src/application/develop:rw
+      - ./package.json:/usr/src/application/package.json:rw
+      - ./webpack.config.js:/usr/src/application/webpack.config.js:rw
+    command: "yarn start --host 0.0.0.0"

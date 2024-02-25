@@ -1,0 +1,47 @@
+@keyframes spin
+	50%
+		transform: rotateY( 90deg )
+
+html
+	min-height: 100vh
+	margin: 0px
+	padding: 0px
+
+body
+	margin: 0px
+	padding: 0px
+	-webkit-font-smoothing: antialiased
+	display: grid
+	grid-template-rows: auto 1fr auto
+	min-height: 100vh
+	max-height: 100vh
+	min-width: 640px
+	font: var(--text-font)
+	color: var(--text-color)
+	background: var(--canvas-color)
+	& > output
+		position: fixed
+		bottom: 0px
+		&.loading
+			top: 0px
+			right: 0px
+			left: 0px
+			display: flex
+			align-items: center
+			justify-content: center
+			background: var(--canvas-color-10, Canvas)
+			@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none)
+				-webkit-backdrop-filter: blur(.2rem)
+				backdrop-filter: blur(.2rem)
+			&:before
+				font-size: 3rem
+				opacity: .15
+	&:has(>output.loading)
+		filter: blur(.2rem)
+
+.loading:before
+	content: '\2744'
+	display: inline-flex
+	align-items: center
+	justify-content: center
+	animation: spin 3s linear infinite
