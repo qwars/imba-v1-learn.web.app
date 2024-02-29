@@ -91,6 +91,11 @@ module.exports = (env, argv) => ({
             },
             {
                 test: /images.+\.(jpe?g|png|gif|svg|ico)$/,
+                type: 'asset/source',
+            },
+            {
+                test: /images.+\.(jpe?g|png|gif|svg|ico)$/,
+		resourceQuery: { not: [/source/] },
                 type: 'asset/resource',
             },
             {
