@@ -73,7 +73,7 @@ module.exports = (env, argv) => ({
 	rules: [
             {
                 test: /\.md$/,
-                type: 'asset/source'
+                type: 'asset/resource'
             },
             {
                 test: /\.json$/,
@@ -91,6 +91,11 @@ module.exports = (env, argv) => ({
             },
             {
                 test: /images.+\.(jpe?g|png|gif|svg|ico)$/,
+                type: 'asset/source',
+            },
+            {
+                test: /images.+\.(jpe?g|png|gif|svg|ico)$/,
+		resourceQuery: { not: [/source/] },
                 type: 'asset/resource',
             },
             {
