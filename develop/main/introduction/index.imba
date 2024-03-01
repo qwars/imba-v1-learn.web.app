@@ -1,8 +1,5 @@
 
-window.fetch(require '../guides/1-Essentials/introduction.md').then do|response|
-	response and response.text.then do|resource|
-			Imba.commit Imba:Content = MarkdownIt.render resource
-
+const Intro = require '../guides/1-Essentials/introduction.md'
 
 export tag Aside < aside
 	@classes = ['']
@@ -21,9 +18,18 @@ export tag Nav < nav
 
 	def render
 		<self>
+			<ul> for part in document.querySelectorAll 'h2'
+				<li :tap.scrollInto( part )> part:textContent
 
 export tag Article < article
 	@classes = ['']
 
+	prop innro default: ''
+
+	def setup
+		window.fetch(Intro).then do|response|
+			response:ok and response.text.then do|resource|
+				Imba.commit @innro = MarkdownIt.render resource
+
 	def render
-		<self html=Imba:Content>
+		<self html=@innro>
