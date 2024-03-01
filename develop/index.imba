@@ -4,6 +4,11 @@ import './index.styl'
 
 import 'imba-router'
 
+const mdfunc = require 'markdown-it'
+
+MarkdownIt = mdfunc
+	html: true
+
 # ISVG = require './images/symbol-icons.svg'
 
 import Application from './application'
