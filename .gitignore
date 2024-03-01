@@ -129,9 +129,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# dotenv environment variables file
-.env
-
 # Emacs Backup files
 *~
 \#*\#
