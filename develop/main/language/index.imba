@@ -1,16 +1,4 @@
 
-const Contents = [
-	require '../guides/2-Language/basics.md'
-	require '../guides/2-Language/caveats.md'
-	require '../guides/2-Language/classes.md'
-	require '../guides/2-Language/functions.md'
-	require '../guides/2-Language/loops.md'
-	require '../guides/2-Language/modules.md'
-	require '../guides/2-Language/more.md'
-	require '../guides/2-Language/switch.md'
-	require '../guides/2-Language/tags.md'
-]
-
 export tag Aside < aside
 	@classes = ['']
 	def render
@@ -36,14 +24,21 @@ export tag Nav < nav
 export tag Article < article
 	@classes = ['']
 	prop contents default: []
+	prop  resources default: [
+		require '../guides/2-Language/basics.md'
+		require '../guides/2-Language/caveats.md'
+		require '../guides/2-Language/classes.md'
+		require '../guides/2-Language/functions.md'
+		require '../guides/2-Language/loops.md'
+		require '../guides/2-Language/modules.md'
+		require '../guides/2-Language/more.md'
+		require '../guides/2-Language/switch.md'
+		require '../guides/2-Language/tags.md'
+	]
 
 	def setup
-		const promise = Promise.all Contents.map do
-			window.fetch $1
-		promise.then do|response|
-			for item in response
-				item:ok and item.text.then do|resource|
-					commit @contents.push MarkdownIt.render resource
+		for item in resources
+			@contents.push MarkdownIt.render item
 
 	def render
 		<self> for content in @contents

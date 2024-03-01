@@ -1,20 +1,4 @@
 
-const Contents = [
-	require '../guides/3-Miscellaneous/Scheduler.md'
-	require '../guides/3-Miscellaneous/Tag.md'
-	require '../guides/3-Miscellaneous/Touch.md'
-
-	# require '../guides/3-Miscellaneous/Advanced/development.md'
-	require '../guides/3-Miscellaneous/Advanced/performance.md'
-	# require '../guides/3-Miscellaneous/Advanced/release.md'
-	require '../guides/3-Miscellaneous/Advanced/routing.md'
-
-	require '../guides/3-Miscellaneous/Tooling/plugins.md'
-	require '../guides/3-Miscellaneous/Tooling/tools.md'
-
-]
-
-
 export tag Aside < aside
 	@classes = ['']
 	def render
@@ -41,14 +25,24 @@ export tag Article < article
 	@classes = ['']
 
 	prop contents default: []
+	prop resources default: [
+		require '../guides/3-Miscellaneous/Scheduler.md'
+		require '../guides/3-Miscellaneous/Tag.md'
+		require '../guides/3-Miscellaneous/Touch.md'
+
+		# require '../guides/3-Miscellaneous/Advanced/development.md'
+		require '../guides/3-Miscellaneous/Advanced/performance.md'
+		# require '../guides/3-Miscellaneous/Advanced/release.md'
+		require '../guides/3-Miscellaneous/Advanced/routing.md'
+
+		require '../guides/3-Miscellaneous/Tooling/plugins.md'
+		require '../guides/3-Miscellaneous/Tooling/tools.md'
+
+	]
 
 	def setup
-		const promise = Promise.all Contents.map do
-			window.fetch $1
-		promise.then do|response|
-			for item in response
-				item:ok and item.text.then do|resource|
-					commit @contents.push MarkdownIt.render resource
+		for item in resources
+			@contents.push MarkdownIt.render item
 
 	def render
 		<self> for content in @contents

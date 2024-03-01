@@ -1,14 +1,4 @@
 
-const Contents = [
-	require '../guides/1-Essentials/custom-tags.md'
-	require '../guides/1-Essentials/event-handling.md'
-	require '../guides/1-Essentials/examples.md'
-	require '../guides/1-Essentials/form-input-bindings.md'
-	require '../guides/1-Essentials/rendering.md'
-	require '../guides/1-Essentials/state-management.md'
-	require '../guides/1-Essentials/tag-syntax.md'
-]
-
 export tag Aside < aside
 	@classes = ['']
 	def render
@@ -34,14 +24,20 @@ export tag Nav < nav
 export tag Article < article
 	@classes = ['']
 	prop contents default: []
+	prop resources default: [
+		require '../guides/1-Essentials/custom-tags.md'
+		require '../guides/1-Essentials/event-handling.md'
+		require '../guides/1-Essentials/examples.md'
+		require '../guides/1-Essentials/form-input-bindings.md'
+		require '../guides/1-Essentials/rendering.md'
+		require '../guides/1-Essentials/state-management.md'
+		require '../guides/1-Essentials/tag-syntax.md'
+	]
 
 	def setup
-		const promise = Promise.all Contents.map do
-			window.fetch $1
-		promise.then do|response|
-			for item in response
-				item:ok and item.text.then do|resource|
-					commit @contents.push MarkdownIt.render resource
+		for item in resources
+			@contents.push MarkdownIt.render item
+
 	def render
 		<self>
 			for content in @contents

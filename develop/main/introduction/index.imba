@@ -1,6 +1,4 @@
 
-const Intro = require '../guides/1-Essentials/introduction.md'
-
 export tag Aside < aside
 	@classes = ['']
 	def render
@@ -24,12 +22,5 @@ export tag Nav < nav
 export tag Article < article
 	@classes = ['']
 
-	prop innro default: ''
-
-	def setup
-		window.fetch(Intro).then do|response|
-			response:ok and response.text.then do|resource|
-				Imba.commit @innro = MarkdownIt.render resource
-
 	def render
-		<self html=@innro>
+		<self html=MarkdownIt.render( require '../guides/1-Essentials/introduction.md' )>

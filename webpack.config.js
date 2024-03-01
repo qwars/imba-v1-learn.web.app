@@ -73,7 +73,7 @@ module.exports = (env, argv) => ({
 	rules: [
             {
                 test: /\.md$/,
-                type: 'asset/resource'
+                type: 'asset/source'
             },
             {
                 test: /\.json$/,
