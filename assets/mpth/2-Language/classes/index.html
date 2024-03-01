@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Для создания экземпляров классов в Imba вы используете метод new, например Array.new, в отличие от специального синтаксиса new Array() в JavaScript. Это не специфично для классов, созданных в Imba, но используется для создания любых объектов, будь то встроенные конструкторы в JavaScript, такие как Array, Object, RegExp, а также классы/конструкторы других языков программирования.">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Классы</h1>
+<h2>Объявление</h2>
+<pre><code class="language-imba">class Point
+    def initialize x,y
+        @x = x
+        @y = y
+</code></pre>
+<h2>Экземпляры</h2>
+<p>Для создания экземпляров классов в Imba вы используете метод new, например Array.new, в отличие от специального синтаксиса new Array() в JavaScript. Это не специфично для классов, созданных в Imba, но используется для создания любых объектов, будь то встроенные конструкторы в JavaScript, такие как Array, Object, RegExp, а также классы/конструкторы других языков программирования.</p>
+<h2>Свойства</h2>
+<p>Вы можете определять свойства в классах, которые автоматически генерируют геттеры и сеттеры. Как уже упоминалось ранее, в Imba придерживаются философии, что классы должны предоставлять доступ к своим данным только через методы. Если в JavaScript вы хотите получить/установить заголовок (title) элемента списка задач (Todo), то обычно вы просто получаете/устанавливаете его как свойство напрямую. В Imba вместо этого вы бы предпочли определить <em>методы</em> для установки и получения заголовка.</p>
+<pre><code class="language-imba">class Todo
+
+    prop title
+
+</code></pre>
+<p>Вышеуказанное в основном является быстрым способом определения и геттера, и сеттера для экземплярной переменной title.</p>
+<pre><code class="language-imba">class Todo
+
+    def title
+        @title
+
+    def title= value
+        @title = value
+
+</code></pre>
+<blockquote>
+<p><strong>TODO</strong> Explain advanced features of <code>prop</code> and <code>attr</code>.</p>
+</blockquote>
+<h2>Наследование</h2>
+<p>Классы могут наследовать друг от друга. Реализация основана на прототипном наследовании JavaScript с некоторыми дополнительными удобствами.</p>
+<pre><code class="language-imba"># Example borrowed from coffeescript.org
+class Animal
+
+    def initialize name
+        @name = name
+
+    def move meters
+        console.log &quot;{@name} moved {meters}m.&quot;
+
+class Snake &lt; Animal
+    def move
+        console.log &quot;Slithering...&quot;
+        super 5
+
+class Horse &lt; Animal
+    def move
+        console.log &quot;Galloping...&quot;
+        super 45
+
+var sam = Snake.new &quot;Sammy the Python&quot;
+var tom = Horse.new &quot;Tommy the Palomino&quot;
+
+sam.move
+tom.move
+</code></pre>
+<blockquote>
+<p><strong>TODO</strong> Explain advanced use of super</p>
+</blockquote>
+
+      </div>
+    </div>
+  </body>
+</html>

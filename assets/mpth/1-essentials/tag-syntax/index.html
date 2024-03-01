@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="The above declaration might look strange at first. DOM elements are first-class citizens in Imba. We are creating a &lt;em&gt;real&lt;/em&gt; dom element, with the className &amp;quot;main&amp;quot; and textContent &amp;quot;Hello&amp;quot;.">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title>Tag Syntax</title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Tag Syntax</h1>
+<h2>Instantiating Tags</h2>
+<pre><code class="language-imba">let element = &lt;div.main&gt; &quot;Hello&quot;
+</code></pre>
+<p>The above declaration might look strange at first. DOM elements are first-class citizens in Imba. We are creating a <em>real</em> dom element, with the className &quot;main&quot; and textContent &quot;Hello&quot;.</p>
+<p>Let's break down the basic syntax before we move on to more advanced examples. Since setting classes of elements is very common, imba has a special shorthand syntax for this. You declare classes by adding a bunch of <code>.classname</code> after the tag type. You can add multiple classes like <code>&lt;div.large.header.primary&gt;</code>. Can you guess how to set the id of a tag? It uses a similar syntax: <code>&lt;div#app.large.ready&gt;</code>.</p>
+<h2>Conditional Classes</h2>
+<p>One very common need when developing web apps is to set a className only when some condition is true. Imba has a shorthand syntax for this too:</p>
+<pre><code class="language-imba"># only add 'ready' class if expression is truthy
+&lt;div.header .ready=expression&gt;
+</code></pre>
+<h2>Dynamic classes</h2>
+<p>What about setting fully dynamic classes? E.g. if state is a variable containing a string, you can set it like this;</p>
+<pre><code class="language-imba">let state = &quot;busy&quot;
+&lt;div.header .{state}&gt;
+</code></pre>
+<h2>Setting inline styles</h2>
+<pre><code class="language-imba">&lt;div css:display='block' css:color='red'&gt;
+</code></pre>
+<h2>Setting custom data</h2>
+<p>When we move on to custom tags, you will find that tags very often represent some data.</p>
+<pre><code class="language-imba">&lt;AppView[myData] title=&quot;Application&quot;&gt;
+</code></pre>
+<h2>Rendering Lists</h2>
+<p>You might notice that we never close our tags. Rather than being delimited by curly braces or “begin/end” keywords, blocks are delimited by indentation, and so are tags. This might seem weird in the beginning, but it makes for very readable and concise code. So, if we want to create a list with some children, we simply go:</p>
+<pre><code class="language-imba">&lt;ul&gt;
+    &lt;li&gt; &quot;Understand indentation&quot;
+    &lt;li&gt; &quot;Get used to it&quot;
+    &lt;li&gt; &quot;Cherish it&quot;
+</code></pre>
+<p>If we have a dynamic list we can simply use a <code>for in</code> loop:</p>
+<pre><code class="language-imba">&lt;ul&gt; for activity in [&quot;Eat&quot;, &quot;Sleep&quot;, &quot;Code&quot;]
+    &lt;li&gt; &lt;span.name&gt; activity
+</code></pre>
+<h2>Conditional Rendering</h2>
+<pre><code class="language-imba">&lt;div&gt;
+    if isLoggedIn
+        &lt;a href=&quot;/logout&quot;&gt; &quot;Log out&quot;
+    else
+        &lt;a href=&quot;/register&quot;&gt; &quot;Register&quot;
+</code></pre>
+<h2>Reactive Rendering</h2>
+<p>As we explain custom tags, you will learn that everything inside <code>&lt;self&gt;</code> is reactive by default. Ending a tag with  <code>-&gt;</code> or <code>=&gt;</code> instead of <code>&gt;</code> marks it as reactive, and allows you to call <code>render</code> on the tag to re-render the content.</p>
+<pre><code class="language-imba">var number = 0
+
+var dead = Imba.mount &lt;div&gt;
+    &lt;span&gt; &quot;Dead time is {Date.new.toLocaleString}&quot;
+    &lt;span&gt; &quot;Number is {number}&quot;
+
+var live = Imba.mount &lt;div -&gt;
+    &lt;span&gt; &quot;Live time is {Date.new.toLocaleString}&quot;
+    &lt;span&gt; &quot;Number is {number}&quot;
+
+setInterval(&amp;,1000) do
+    number++
+    dead.render # nothing changes
+    live.render # content is updated
+</code></pre>
+<h2>Rendering into document</h2>
+<p>To add tags to the actual document, you should use <code>Imba.mount(element, into)</code>. If you do not supply a second argument, the element will be added to document.body by default.</p>
+<pre><code>Imba.mount &lt;div -&gt; &lt;span&gt; &quot;Let's get started!&quot;
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>

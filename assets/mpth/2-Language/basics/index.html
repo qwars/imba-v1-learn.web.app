@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Несмотря на то, что синтаксис и семантика Imba более связаны с Ruby, чем с JavaScript, он компилируется в обычный и производительный JavaScript и полностью совместим с любой существующей JavaScript-библиотекой. Imba не расширяет ни один из встроенных типов JavaScript. Массивы - это массивы, строки - строки, числа - числа, классы - конструкторы с прототипами и так далее. Если вам просто нравится Imba больше, нет никакой причины не писать свой пакет npm на Imba, даже если он предназначен для использования в общей экосистеме JavaScript. Фактически, Imba генерирует &lt;em&gt;очень&lt;/em&gt; читаемый JavaScript, сохраняя форматирование, комментарии и стиль кодирования.">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Основное</h1>
+<p>Несмотря на то, что синтаксис и семантика Imba более связаны с Ruby, чем с JavaScript, он компилируется в обычный и производительный JavaScript и полностью совместим с любой существующей JavaScript-библиотекой. Imba не расширяет ни один из встроенных типов JavaScript. Массивы - это массивы, строки - строки, числа - числа, классы - конструкторы с прототипами и так далее. Если вам просто нравится Imba больше, нет никакой причины не писать свой пакет npm на Imba, даже если он предназначен для использования в общей экосистеме JavaScript. Фактически, Imba генерирует <em>очень</em> читаемый JavaScript, сохраняя форматирование, комментарии и стиль кодирования.</p>
+<h3>Interoperability</h3>
+<p>Imba компилируется в очень простой JavaScript. Все основные типы такие же, как в JavaScript, поэтому для получения документации о доступных методах вы можете обратиться к MDN <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp">RegExp</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math">Math</a>.</p>
+<h4>Strings</h4>
+<pre><code class="language-imba">var single = 'single quotes'
+var double = &quot;double quotes&quot;
+var interpolation = &quot;string has {double}&quot;
+</code></pre>
+<h4>Numbers</h4>
+<pre><code class="language-imba">var integer = 42
+var float = 42.10
+</code></pre>
+<h4>Objects</h4>
+<pre><code class="language-imba">var object = {name: 'Imba', type: 'Language'}
+</code></pre>
+<h4>Arrays</h4>
+<pre><code class="language-imba">var array = [1,2,3,4,5]
+</code></pre>
+<h4>Regexes</h4>
+<pre><code class="language-imba">var regex = /number is (\d+)/
+</code></pre>
+<h4>Loops</h4>
+<pre><code class="language-imba">for num in [1,2,3]
+    num
+
+for own key, value of object
+    value
+</code></pre>
+<h4>Functions</h4>
+<pre><code class="language-imba">def hello
+    return 'world'
+
+console.log hello
+</code></pre>
+<h4>Classes</h4>
+<pre><code class="language-imba">class Todo
+
+    def initialize title
+        @title = title
+        @completed = no
+
+    def complete
+        @completed = yes
+</code></pre>
+<h4>Operators</h4>
+<pre><code class="language-imba">var item
+item = 100 # set value of item
+item ||= 100 # set if value is falsy
+item &amp;&amp;= 100 # set if value is already truthy
+item ?= 100 # set if value is null or undefined
+
+# comparators
+item == 10 # check
+item === 10 # strictly equal
+item != 10 # not equal
+item !== item # strictly not equal
+item &gt; 10 # greater than
+item &lt; 10 # less than
+item &gt;= 10 # greater than or equal
+item &lt;= 10 # less than or equal
+</code></pre>
+<h4>Bitwise operators</h4>
+<pre><code class="language-imba">a &amp; b   # Bitwise AND
+a | b   # Bitwise OR
+a ^ b   # Bitwise XOR
+~ a     # Bitwise NOT
+a &lt;&lt; b  # Left shift
+a &gt;&gt; b  # Sign-propagating right shift
+a &gt;&gt;&gt; b	# Zero-fill right shift
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>

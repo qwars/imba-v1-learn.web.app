@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="You can easily define your own tags / components, as easily as creating classes. They are similar to components in react. Tags are defined with the &lt;code&gt;tag&lt;/code&gt; keyword:">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title>Custom Tags</title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Custom Tags</h1>
+<h2>Declaring Tags</h2>
+<p>You can easily define your own tags / components, as easily as creating classes. They are similar to components in react. Tags are defined with the <code>tag</code> keyword:</p>
+<pre><code class="language-imba">tag App
+    # custom instance methods, properties etc
+
+# create an instance of app - just like any other tag
+let app = &lt;App.main&gt; &lt;h1&gt; &quot;Hello&quot;
+</code></pre>
+<p>Your custom tags will by default inherit from ‘div’, but they can inherit from any tag. You can also define instance methods on them.</p>
+<pre><code class="language-imba"># define a custom tag, inheriting from form
+tag RegisterForm &lt; form
+    def onsubmit event
+        # declare handlers as methods
+        console.log &quot;submitted&quot;
+
+    def someMethod
+        console.log &quot;hello&quot;
+        self
+
+# create an instance of app - just like any other tag
+let form = &lt;RegisterForm&gt;
+form.someMethod # =&gt; &quot;hello&quot;
+</code></pre>
+<blockquote>
+<p>When you declare <code>tag SomeComponent</code> you are declaring a new tag <em>type</em>, not an instance. It is exactly the same as declaring a new <code>class SomeClass</code> . <code>&lt;SomeComponent&gt;</code> creates a new <em>instance</em> of this tag, just like <code>SomeClass.new</code> creates a new instance of said class.</p>
+</blockquote>
+<h2>Custom Rendering</h2>
+<p>Just like components in react, you can declare how custom tags should render, by declaring a render method:</p>
+<pre><code class="language-imba">tag App
+    def render
+        &lt;self&gt; &lt;h1&gt; &quot;Hello world&quot;
+
+let app = &lt;App.main&gt;
+# The DOM tree of app is now:
+# &lt;div class='App main'&gt;&lt;h1&gt;Hello world&lt;/h1&gt;&lt;/div&gt;
+</code></pre>
+<blockquote>
+<p><code>&lt;self&gt;</code> inside render deserves some explanation. In Imba, instances of tags are directly linked to their real DOM element. <code>&lt;self&gt;</code> refers to the component itself, and is a way of saying &quot;now I want the content inside self to look exactly like the following. This is important to understand.</p>
+</blockquote>
+<pre><code class="language-imba">tag Wrong
+    def render
+        &lt;h1&gt; &quot;Hello {Math.random}&quot;
+
+let wrong = &lt;Wrong&gt;
+# wrong.render would now simply create a new h1 element
+# every time it is called. The DOM element of wrong will
+# still have no children.
+
+tag Right
+    def render
+        &lt;self&gt; &lt;h1&gt; &quot;Hello {Math.random}&quot;
+let right = &lt;Right&gt;
+# right.render will now update its own DOM tree every time
+# it is called, ensuring that the DOM is in fact reflecting
+# the view declared inside &lt;self&gt; 
+</code></pre>
+<h2>Inheritance</h2>
+<p>Custom tags can inherit from other custom tags, or from native tags. E.g. if you want to create a custom form component, you can simply inherit from form:</p>
+<pre><code class="language-imba"># define a custom tag, inheriting from form
+tag RegisterForm &lt; form
+
+let view = &lt;RegisterForm&gt;
+# the DOM element of view is now of type form.
+# html: &lt;form class='RegisterForm'&gt;&lt;/form&gt;
+</code></pre>
+<h2>Properties</h2>
+<pre><code class="language-imba">tag App
+
+    # declaring custom properties
+    prop slug
+    
+    # properties with a default value
+    prop greeting default: 'Hello human!'
+
+    def render
+        &lt;self&gt;
+            &lt;h1&gt; &quot;Slug is: {slug}&quot;
+            if slug == '/home'
+                &lt;div&gt; &quot;{greeting} You are home&quot;
+
+Imba.mount &lt;App slug='/home'&gt;
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>

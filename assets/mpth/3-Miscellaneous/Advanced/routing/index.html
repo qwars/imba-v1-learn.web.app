@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Для большинства одностраничных приложений рекомендуется использовать библиотеку &lt;a href=&quot;https://github.com/somebee/imba-router&quot;&gt;imba-router&lt;/a&gt;. Посмотрите эту &lt;a href=&quot;https://scrimba.com/playlist/pMvYcg&quot;&gt;6-частную интерактивную видеозапись&lt;/a&gt; для получения дополнительной информации.">
+    <link rel="stylesheet" href="../../../github.css">
+    <script defer src="../../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Imba Router</h1>
+<p>Для большинства одностраничных приложений рекомендуется использовать библиотеку <a href="https://github.com/somebee/imba-router">imba-router</a>. Посмотрите эту <a href="https://scrimba.com/playlist/pMvYcg">6-частную интерактивную видеозапись</a> для получения дополнительной информации.</p>
+<pre><code class="language-imba">require 'imba-router'
+
+tag Home
+    def render
+        &lt;self&gt; &quot;Home&quot;
+
+tag About
+    def render
+        &lt;self&gt; &quot;About&quot;
+
+tag App
+    def render
+        &lt;self&gt;
+            &lt;header&gt;
+                &lt;a route-to='/home'&gt; &quot;Home&quot;
+                &lt;a route-to='/about'&gt; &quot;About&quot;
+            &lt;Home route='/home'&gt; 
+            &lt;About route='/about'&gt;
+
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>

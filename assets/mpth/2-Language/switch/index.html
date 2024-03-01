@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Вы можете использовать операторы switch в Imba двумя способами:">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Switch</h1>
+<p>Вы можете использовать операторы switch в Imba двумя способами:</p>
+<pre><code>var number = 1
+var numberString = switch number
+  when 0
+    &quot;zero&quot;
+  when 1
+    &quot;one&quot;
+  else
+    &quot;not 1 nor 0&quot;
+
+# compact 
+var numberString2 = switch number
+  when 0 then &quot;zero&quot;
+  when 1 then &quot;one&quot;
+  else &quot;not 1 nor 0&quot;
+
+# you can also mix them
+var numberString3 = switch number
+  when 0 then &quot;zero&quot;
+  when 1
+    &quot;one&quot;
+  else &quot;not 1 nor 0&quot;
+
+</code></pre>
+<p>Как видите, else используется вместо default. Не более ли это понятно?</p>
+
+      </div>
+    </div>
+  </body>
+</html>

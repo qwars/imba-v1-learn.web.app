@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Вся веб-сайт написан на Imba. Он использует один и тот же код как для сервера, так и для клиента. После первоначальной загрузки, навигация в браузере происходит с использованием истории (push/popState) и отрисовывается непосредственно на клиенте. Однако, при жестком обновлении страницы, веб-сайт будет отображаться с сервера, что позволяет оказаться на той же странице. Это достигается благодаря использованию одинаковой логики для маршрутизации. Вы можете найти код на &lt;a href=&quot;https://github.com/somebee/imba.io&quot;&gt;GitHub&lt;/a&gt;.">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Примеры</h1>
+<h2>Фильтрация списка</h2>
+<pre><code class="language-imba"># Получить имена всех свойств элемента
+var items = Object.keys(Element:prototype).sort
+
+tag App
+    prop query default: &quot;&quot;
+
+    def render
+        &lt;self&gt;
+            # Связываем поле ввода со свойством запроса.
+            &lt;input[query] type='text'&gt;
+            # Отображение списка с некоторыми встроенными стилями css
+            &lt;ul css:height=200 css:overflow='auto'&gt;
+                # filter list while iterating
+                for item in data when item.indexOf(query) &gt;= 0
+                    &lt;li&gt; item
+
+Imba.mount &lt;App[items]&gt;
+</code></pre>
+<h2>Мастер-детали</h2>
+<pre><code class="language-imba"># Получить имена всех свойств элемента ( Element ).
+var notes = [
+    {body: &quot;First note&quot;}
+]
+
+tag App
+    prop note
+
+    def addItem
+        notes.unshift(body: &quot;New Note&quot;)
+
+    def render
+        &lt;self.hbox css:height=200&gt;
+            &lt;aside&gt;
+                &lt;ul&gt; for item in notes
+                    &lt;li .selected=(note == item) :tap.setNote(item)&gt;
+                        &lt;span&gt; item:body
+                &lt;footer&gt; &lt;button :tap.addItem&gt; &quot;New note&quot;
+            if note
+                &lt;section&gt; &lt;textarea[note:body].full&gt;
+
+Imba.mount &lt;App&gt;
+</code></pre>
+<h2>Простой список задач (todo list)</h2>
+<pre><code class="language-imba">tag App
+    prop items
+
+    def addItem
+        if @input.value
+            items.push(title: @input.value)
+            @input.value = &quot;&quot;
+
+    def toggleItem item
+        item:completed = !item:completed
+
+Imba.mount &lt;App.vbox items=[] -&gt;
+    &lt;form.bar :submit.prevent.addItem&gt;
+        &lt;input@input&gt;
+        &lt;button&gt; 'add'
+    &lt;ul&gt; for item in items
+        &lt;li .done=item:completed :tap.toggleItem(item)&gt; item:title
+</code></pre>
+<h2>More examples</h2>
+<h3><a href="https://github.com/somebee/imba.io">Imba.io</a></h3>
+<p>Вся веб-сайт написан на Imba. Он использует один и тот же код как для сервера, так и для клиента. После первоначальной загрузки, навигация в браузере происходит с использованием истории (push/popState) и отрисовывается непосредственно на клиенте. Однако, при жестком обновлении страницы, веб-сайт будет отображаться с сервера, что позволяет оказаться на той же странице. Это достигается благодаря использованию одинаковой логики для маршрутизации. Вы можете найти код на <a href="https://github.com/somebee/imba.io">GitHub</a>.</p>
+<h3><a href="https://github.com/somebee/todomvc-imba">TodoMVC</a></h3>
+<p>The basic Imba implementation of TodoMVC is a good place to start playing around.</p>
+<h3><a href="https://github.com/imba/hello-world-imba">Hello World</a></h3>
+<p>Tiny application with webpack/imbapack setup.</p>
+
+      </div>
+    </div>
+  </body>
+</html>

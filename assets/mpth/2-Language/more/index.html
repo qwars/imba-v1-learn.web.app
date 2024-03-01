@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Imba поддерживает ключевое слово await, которое компилируется напрямую в async/await в JavaScript. Единственная разница заключается в том, что вам не нужно помечать ваши функции как async. Любая функция, содержащая оператор await, автоматически будет скомпилирована в асинхронную функцию.">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Await</h1>
+<p>Imba поддерживает ключевое слово await, которое компилируется напрямую в async/await в JavaScript. Единственная разница заключается в том, что вам не нужно помечать ваши функции как async. Любая функция, содержащая оператор await, автоматически будет скомпилирована в асинхронную функцию.</p>
+<h4>await</h4>
+<pre><code class="language-imba">def load url
+    var res = await window.fetch url
+    return res.json
+
+var data = await load &quot;/some/url&quot;
+</code></pre>
+<h4>Without await</h4>
+<pre><code class="language-imba">def load url
+    window.fetch(url).then do |res|
+        return res.json
+
+load(&quot;/some/url&quot;).then do |data|
+    # do something with data
+</code></pre>
+<blockquote>
+<p>Ключевое слово async/await уже поддерживается во всех основных браузерах. Если вы ориентируетесь на пользователей IE11, вам потребуется использовать Babel для компиляции кода.</p>
+</blockquote>
+
+      </div>
+    </div>
+  </body>
+</html>

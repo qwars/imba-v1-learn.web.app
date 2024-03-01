@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Even though tags are just very thin wrappers around native DOM elements, they do have some functionality that is worth knowing. If you want to deal with the DOM element directly, you can always access that through &lt;code&gt;tag.dom&lt;/code&gt;. The DOM element also has a reference to its Imba.Tag wrapper, through &lt;code&gt;domElement:_tag&lt;/code&gt;">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title>Tags</title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Tags</h1>
+<p>Even though tags are just very thin wrappers around native DOM elements, they do have some functionality that is worth knowing. If you want to deal with the DOM element directly, you can always access that through <code>tag.dom</code>. The DOM element also has a reference to its Imba.Tag wrapper, through <code>domElement:_tag</code></p>
+<pre><code>var element = &lt;div.one.two&gt; &quot;Hello&quot;
+element # =&gt; Imba.Tag - thin wrapper
+element.dom # =&gt; HTMLDivElement - real dom element
+</code></pre>
+<blockquote>
+<p>imba.io is written entirely in Imba, and the views are generated using tags. The same code is rendering both on the server and the client, using the same logic for routing etc. If you are interested, the sourcecode is publicly available at <a href="https://github.com/somebee/imba.io">github</a>.</p>
+</blockquote>
+<h2>Instances</h2>
+<p>You can think of the tag syntax as a very consise specialized syntax for creating instances of a certain kind of objects. Just like <code>[]</code> is a shorter way to create an array <code>new Array()</code></p>
+<pre><code class="language-imba">var array = [] # shorthand for creating an array
+var node = &lt;div&gt; # shorthand for creating a div element
+
+&lt;div.one title='hello'&gt;
+# is really just shorthand for
+Imba.createElement('div').flag('one').setTitle('hello').end()
+</code></pre>
+<h2>Lifecycle</h2>
+<p>There are a few methods you can override on custom tags to hook into the lifecycle of a tag. Here we override all these methods in our custom <code>Example</code> tag</p>
+<pre><code class="language-imba">tag Example
+    def build
+        # called once, before properties are set
+        # setting an instance variable 'counter'
+        @counter = 0
+
+    def setup
+        # called once, after properties are set
+
+    def mount
+        # called when tag has been added to the document
+        # schedule tag (to call tick) every 1000ms
+        schedule(interval: 1000)
+
+    def unmount
+        # called when tag has been removed from the document
+        # unscheduling the tag
+        unschedule
+
+    def tick
+        # called when/if tag is scheduled and scheduler is active
+        # default is to call render
+        render
+
+    def render
+        # declare inner view
+        &lt;self.bar&gt;
+            &lt;strong&gt; &quot;Title: {data:name}&quot;
+            &lt;em&gt; &quot;Counting {@counter++}&quot;
+
+# Mount an instance of Example - with some data
+Imba.mount &lt;Example[{name: &quot;Lifecycle&quot;}]&gt;
+</code></pre>
+<h2>Interface</h2>
+<pre><code class="language-imba">tag Example
+    def interface
+        dom # access to the native dom element
+</code></pre>
+<h2>Scheduling</h2>
+<p>When you mount a tag using <code>Imba.mount</code>, you shouldn't usually need to think about scheduling.</p>
+<h4>Default scheduling</h4>
+<pre><code class="language-imba">var counter = 0
+var status = &quot;Hello&quot;
+
+tag App
+    def doSomething
+        self
+
+    def loadAsync
+        status = &quot;loading&quot;
+        Promise.new do |resolve|
+            setTimeout(&amp;,500) do
+                resolve(status = &quot;loaded&quot;)
+
+    def render
+        &lt;self.bar&gt;
+            &lt;button&gt; &quot;noop&quot;
+            &lt;button :tap.doSomething&gt; &quot;handle&quot; 
+            &lt;button :tap.loadAsync&gt; &quot;async&quot;
+            &lt;div&gt; &quot;Rendered: {++counter}&quot;
+            &lt;div&gt; &quot;Status: {status}&quot;
+
+# when mounting a node with Imba.mount it will automatically
+# be scheduled to render after dom events and Imba.commit
+Imba.mount &lt;App&gt;
+</code></pre>
+<p>Even though most changes to the state of your application will happen as a result of user interactions, there are still a few places you need to notify Imba that things have changed. E.g. if you receive data from a socket you want to call <code>Imba.commit</code> after receiving messages <code>socket.addEventListener('message',Imba:commit)</code>, and if you are fetching data from a server outside of event handlers, you want to call Imba.commit at the end of the fetch.</p>
+<h4>Rendering every frame</h4>
+<pre><code class="language-imba">tag App
+    def mount
+        schedule(raf: true)
+
+    def onmousemove e
+        @x = e.x
+        @y = e.y
+
+    def render
+        &lt;self.bar&gt;
+            &lt;div&gt; &quot;Mouse is at {@x or 0} {@y or 0}&quot;
+
+Imba.mount &lt;App&gt;
+</code></pre>
+<h4>Rendering at intervals</h4>
+<pre><code class="language-imba">tag Clock
+    def mount
+        schedule(interval: 1000)
+
+    def render
+        &lt;self&gt; Date.new.toLocaleString
+
+Imba.mount &lt;Clock&gt;
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="If you are coming from JavaScript, there are a few things you really need to know when learning Imba. Imba is not like CoffeeScript, in the sense that it does not try to just be a slightly different dialect of JavaScript. Imba compiles to javascript, but the syntax and semantics affects how you structure your code.">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title>Caveats</title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Caveats</h1>
+<p>If you are coming from JavaScript, there are a few things you really need to know when learning Imba. Imba is not like CoffeeScript, in the sense that it does not try to just be a slightly different dialect of JavaScript. Imba compiles to javascript, but the syntax and semantics affects how you structure your code.</p>
+<p>If you are not familiar with ruby, many parts of Imba will probably seem slightly confusing until you understand the concepts of implicit self and implicit calling. Any lowercase identifier that is not explicitly declared as a variable is treated as an implicit call on the <code>self</code> of the current scope. The analyzer / highlighter will help by highlighting variables differently.</p>
+<h2>Implicit self</h2>
+<pre><code class="language-imba">hello # compiles to this.hello()
+# since hello is not a declared variable
+# it assumes 'self' as the implicit context.
+</code></pre>
+<pre><code class="language-imba"># declare the variable hello
+var hello = &quot;string&quot;
+
+# now hello will simply be a regular variable access
+hello # compiles to hello
+</code></pre>
+<blockquote>
+<p>Imba has some predeclared global variables: <code>window</code>, <code>document</code>, <code>console</code>, <code>process</code>, <code>setTimeout</code>, <code>setInterval</code>, <code>clearTimeout</code>, <code>clearInterval</code>, <code>parseInt</code>, <code>parseFloat</code>, <code>__dirname</code></p>
+<p>This means that these will always resolve to variables. If you have defined a <code>console</code> method on an object, it must be called with explicit self: <code>self.console('something')</code></p>
+</blockquote>
+<h3>extern</h3>
+<pre><code class="language-imba">extern something
+something
+</code></pre>
+<h3>self vs this</h3>
+<p>In Imba, <code>self</code> is the implied context, just like <code>self</code> in ruby. As you will soon learn, self is not directly mapped to this in JavaScript. Self refers to the this of the closest 'closed' scope. Classes and methods are closed scopes, while function expressions are not. When you get used to this, it is really one of the things that make coding Imba very pleasant.</p>
+<pre><code class="language-imba">class Item
+
+    def update data
+        # do something
+        self
+
+    def fetch
+        request('/some-url') do |data|
+            # functions as blocks are not closed scopes,
+            # so the implicit self will still refer to the
+            # self of the outer method.
+            self.update data
+
+</code></pre>
+<blockquote>
+<p><code>this</code> <em>always</em> refers to the this you know and love (or hate) from JavaScript. So if you really need to access the this inside a callback or block, you should use this explicitly.</p>
+</blockquote>
+<h2>Implicit invocation</h2>
+<p>In Imba you are invoking methods with the regular dot-operator. In JavaScript <code>car.start</code> will access the <code>start</code> property of car. In Imba it will actually <em>invoke</em> the <code>start</code> method of car. Parenthesis are optional. You can read more about the reasons for this [here]. If you're thinking in JavaScript, this might seem impractical and confusing. The same behaviour can be seen in languages like Ruby.</p>
+<p>So, how do we access properties then? You can do it with <code>car['start']</code>, just like in JavaScript. Since accessing properties are still used quite a lot when dealing with external libraries written in JavaScript, we also have a shorthand for this, using the unspaced colon-operator <code>car:start</code>. For fresh users, this can cause some headache, but after a few hours of coding it will become second nature.</p>
+<blockquote>
+<p>If you end up using <code>object:access</code> repeatedly in your Imba code, it is very likely because you are thinking in JavaScript. In Imba, a class should only expose information and behaviour through methods.</p>
+</blockquote>
+<p>Unlike Ruby, Imba has implicit setters as well. Since all variables are explicitly declared in Imba, assigning to something that is not declared is just seen as any other method. <code>name = 1</code> resolves to a setter, and compiles</p>
+<h2>Arguments</h2>
+<p>The arguments of a method can be accessed through the special <code>$0</code>. Each individual argument can be accessed through <code>$n</code>, where n is the argument number, starting from 1.</p>
+<pre><code class="language-imba">def method
+    $0 # -&gt; arguments
+    $1 # -&gt; arguments[0]
+    $2 # -&gt; arguments[1]
+
+# sometimes practical for inline methods
+var doubles = [1,2,3].map do $1 * 2
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>

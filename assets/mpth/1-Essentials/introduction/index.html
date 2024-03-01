@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Imba - это новый язык программирования для веба, который компилируется в производительный JavaScript. Он сильно вдохновлен Ruby и Python, но разработан явно для веб-программирования (как на сервере, так и на клиенте). Imba относится к элементам DOM как к полноценным объектам. Эти элементы компилируются в &lt;a href=&quot;/guides/advanced/performance&quot;&gt;встроенный DOM&lt;/a&gt;, который &lt;a href=&quot;https://somebee.github.io/dom-reconciler-bench/index.html&quot;&gt;в разы быстрее&lt;/a&gt; современных виртуальных DOM-реализаций. Мы искренне верим, что это открывает новый путь в разработке веб-приложений.">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Введение</h1>
+<h2>Что такое Imba?</h2>
+<p>Imba - это новый язык программирования для веба, который компилируется в производительный JavaScript. Он сильно вдохновлен Ruby и Python, но разработан явно для веб-программирования (как на сервере, так и на клиенте). Imba относится к элементам DOM как к полноценным объектам. Эти элементы компилируются в <a href="/guides/advanced/performance">встроенный DOM</a>, который <a href="https://somebee.github.io/dom-reconciler-bench/index.html">в разы быстрее</a> современных виртуальных DOM-реализаций. Мы искренне верим, что это открывает новый путь в разработке веб-приложений.</p>
+<h2>Установка</h2>
+<pre><code>yarn global add imba # npm install -g imba
+</code></pre>
+<h1>Оптимизирован для</h1>
+<h2>Developers</h2>
+<p>Вместо того, чтобы быть академическим упражнением, Imba был разработан на протяжении нескольких лет вместе с реальными приложениями. Imba был настроен для облегчения сложностей, с которыми мы сталкиваемся при разработке больших и динамичных приложений (и сайтов).</p>
+<h2>Interoperability</h2>
+<p>Imba компилируется в чистый и читаемый JavaScript. Ваше форматирование, отступы и комментарии сохраняются. Вы можете без проблем использовать любую существующую JavaScript-библиотеку из Imba и наоборот.</p>
+<h2>Speed</h2>
+<p>Вы можете использовать все синтаксические улучшения в Imba, не беспокоясь о производительности и читаемости скомпилированного кода, и создание представлений с использованием встроенной поддержки Imba для тегов приводит к беспрецедентной производительности.</p>
+<pre><code class="language-imba">var number = 42
+var opposite = true
+var string = &quot;the answer is {number}&quot;
+var regex = /answer is (\d+)/
+
+var info =
+    name: 'Imba'
+    version: Imba.VERSION
+    repository: 'https://github.com/imba/imba'
+    inspiration: ['ruby','python','react','coffeescript']
+    creator: 'Sindre Aarsaether'
+    contributors: [
+        'Sindre Aarsaether' # github.com/somebee
+        'Magnus Holm' # github.com/judofyr
+        'Slee Woo' # github.com/sleewoo
+    ]
+</code></pre>
+<blockquote>
+<p>Хотя Imba использовался в производстве более года (используется на scrimba.com), сообщество находится на ранней стадии развития, и документация все еще отсутствует. Мы особенно благодарны за любую обратную связь, предложения и помощь в разработке документации!</p>
+</blockquote>
+<h2>Синтаксис и семантика</h2>
+<p>Хотя синтаксис и семантика Imba больше связаны с Ruby, чем с JavaScript, он компилируется в обычный и производительный JavaScript и полностью совместим с любой существующей JavaScript-библиотекой. Imba не расширяет ни один из встроенных типов JavaScript. Массивы остаются массивами, строки - строками, числа - числами, классы - конструкторами с прототипами и так далее. Если вам нравится Imba больше, нет никаких причин, чтобы не писать свой npm-пакет на Imba, даже если он предназначен для использования в общей JavaScript-экосистеме. На самом деле, Imba генерирует <em>очень</em> читаемый JavaScript, сохраняя отступы, комментарии и стиль кодирования.</p>
+<pre><code class="language-imba"># Strings
+var single = 'single quotes'
+var double = &quot;double quotes&quot;
+var interpolation = &quot;string has {double}&quot;
+
+# Numbers
+var integer = 42
+var float = 42.10
+
+# Objects
+var object = {name: 'Imba', type: 'Language'}
+
+# Arrays
+var array = [1,2,3,4,5]
+
+# Regular expressions
+var regex = /number is (\d+)/
+
+# Functions
+def hello
+    console.log 'got here'
+    return 'world'
+
+# Classes
+class Todo
+    # automatic getter/setter declaration
+    prop title
+
+    def initialize title
+        # instance variables
+        @title = title
+        @completed = no
+
+    def complete
+        @completed = yes
+
+# Tags
+var item = &lt;div.header&gt; &quot;This is a div&quot;
+var list = &lt;ul.list&gt; for item in [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;]
+    &lt;li&gt; &lt;span.name&gt; item
+</code></pre>
+<h2>Для начала</h2>
+<blockquote>
+<p>Это руководство предполагает знание HTML, CSS и JavaScript (или другого языка программирования). Оно будет особенно полезно, если вы знакомы с React для лучшего понимания работы с тегами и пользовательскими тегами.</p>
+</blockquote>
+<p>Тут распишу как добавить плагин в <a href="https://github.com/somebee/vscode-imba">VSCode</a></p>
+
+      </div>
+    </div>
+  </body>
+</html>

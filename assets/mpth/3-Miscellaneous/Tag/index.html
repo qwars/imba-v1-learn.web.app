@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Хотя теги являются всего лишь тонкими оболочками над нативными элементами DOM, они имеют некоторую функциональность, которую стоит знать. Если вы хотите работать с элементом DOM напрямую, вы всегда можете получить к нему доступ через tag.dom.">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Более детальный взгляд на теги</h1>
+<p>Хотя теги являются всего лишь тонкими оболочками над нативными элементами DOM, они имеют некоторую функциональность, которую стоит знать. Если вы хотите работать с элементом DOM напрямую, вы всегда можете получить к нему доступ через tag.dom.</p>
+<pre><code>var element = &lt;div.one.two&gt; &quot;Hello&quot;
+element # =&gt; Imba.Tag - thin wrapper
+element.dom # =&gt; HTMLDivElement - real dom element
+</code></pre>
+<h3>Lifecycle</h3>
+<p>Существует несколько методов, которые вы можете переопределить в пользовательских тегах, чтобы подключиться к жизненному циклу тега. Ниже приведен пример, в котором мы переопределяем все эти методы в пользовательском теге Example:</p>
+<pre><code class="language-imba">tag Example
+    def build
+        # called once, before properties are set
+        # setting an instance variable 'counter'
+        @counter = 0
+
+    def setup
+        # called once, after properties are set
+
+    def mount
+        # called when tag has been added to the document
+        # schedule tag (to call tick) every 1000ms
+        schedule(interval: 1000)
+
+    def unmount
+        # called when tag has been removed from the document
+        # unscheduling the tag
+        unschedule
+
+    def tick
+        # called when/if tag is scheduled and scheduler is active
+        # default is to call render
+        render
+
+    def render
+        # declare inner view
+        &lt;self&gt;
+            &lt;h1&gt; &quot;Title: {data:name}&quot;
+            &lt;h3&gt; &quot;Counting {@counter++}&quot;
+
+# Mount an instance of Example - with some data
+Imba.mount &lt;Example[{name: &quot;Lifecycle&quot;}]&gt;
+</code></pre>
+<h3>Методы</h3>
+<p>Доступ к непосредственному элементу DOM для данного тега можно получить через свойство dom.</p>
+<h4><code>tag.flags</code></h4>
+<p>Вы можете получить доступ к списку классов с помощью выражения tag.dom.classList.</p>
+<h4><code>tag.data</code></h4>
+<p>Метод data возвращает данные, привязанные к данному тегу. Вы можете получить доступ к данным с помощью выражения tag.data.</p>
+<h4><code>tag.render</code></h4>
+<p>По умолчанию метод не выполняет никаких действий. Вы можете переопределить этот метод для создания собственной логики рендеринга.</p>
+<h4><code>tag.trigger(name, data = null)</code></h4>
+<p>Метод trigger позволяет генерировать пользовательские события для данного тега. События будут всплывать, как и обычные события, но обрабатываться непосредственно внутри системы событий Imba.Event, без генерации реального события браузера. В качестве необязательного второго аргумента можно передать данные для события.</p>
+<pre><code>tag CustomList &lt; ul
+    def select item
+        trigger('listselect',item)
+</code></pre>
+<h4><code>tag.schedule(options)</code></h4>
+<p>Метод activate вызывается для активации планировщика (scheduler) для данного тега. Параметры по умолчанию - events: true. Дополнительные параметры можно увидеть в документации к Imba.Scheduler.</p>
+<pre><code class="language-imba">tag Clock
+    def mount
+        # when element is inserted in document
+        # schedule to re-render every second:
+        schedule(interval: 1000)
+
+tag App
+    def mount
+        # when element is inserted in document
+        # schedule to re-render after every handled event
+        schedule(events: true)
+
+</code></pre>
+<h4><code>tag.unschedule</code></h4>
+<p>Метод deactivate вызывается для деактивации планировщика (scheduler) для данного тега.</p>
+<h3>Flagging</h3>
+<h3>Styling</h3>
+<h4><code>tag.css(name)</code></h4>
+<p>Возвращает значение встроенного стиля с указанным именем (name).`</p>
+<h4><code>tag.css(name, value)</code></h4>
+<p>Установка стилей</p>
+<pre><code class="language-imba">var node = &lt;div&gt;
+# with key and value
+node.css('display','block')
+# with object
+node.css(display: 'block', position: 'absolute')
+
+&lt;div css:display='block'&gt;
+# inline styles are actually using the css-method
+# Imba.createElement('div').css('display','block').end()
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>
