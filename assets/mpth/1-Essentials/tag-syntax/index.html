@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Вышеуказанное объявление может показаться странным на первый взгляд. В Imba элементы DOM являются полноценными объектами. Мы создаем &lt;em&gt;реальный&lt;/em&gt; DOM-элемент с классом &amp;quot;main&amp;quot; и текстом &amp;quot;Hello&amp;quot;.">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Синтаксис для тегов</h1>
+<h2>Создание экземпляра тегов</h2>
+<pre><code class="language-imba">let element = &lt;div.main&gt; &quot;Hello&quot;
+</code></pre>
+<p>Вышеуказанное объявление может показаться странным на первый взгляд. В Imba элементы DOM являются полноценными объектами. Мы создаем <em>реальный</em> DOM-элемент с классом &quot;main&quot; и текстом &quot;Hello&quot;.</p>
+<p>Давайте разберем основной синтаксис, прежде чем перейти к более продвинутым примерам. Поскольку установка классов элементов очень распространена, Imba имеет специальный сокращенный синтаксис для этого. Определение классов осуществляется путем добавления .classname после типа тега. Вы можете добавить несколько классов, например &lt;div.large.header.primary&gt;. Можете ли вы догадаться, как установить идентификатор тега? Здесь используется похожий синтаксис: &lt;div#app.large.ready&gt;.</p>
+<h2>Условные классы</h2>
+<p>Одна очень распространенная потребность при разработке веб-приложений - установка className только в случае выполнения определенного условия. В Imba также есть удобный синтаксис для этого:</p>
+<pre><code class="language-imba"># only add 'ready' class if expression is truthy
+&lt;div.header .ready=expression&gt;
+</code></pre>
+<h2>Динамические классы</h2>
+<p>Если вам нужно установить полностью динамические классы, например, когда состояние представляет собой переменную со строковым значением, вы можете сделать это следующим образом:</p>
+<pre><code class="language-imba">let state = &quot;busy&quot;
+&lt;div.header .{state}&gt;
+</code></pre>
+<h2>Установка встроенных стилей</h2>
+<pre><code class="language-imba">&lt;div css:display='block' css:color='red'&gt;
+</code></pre>
+<h2>Установка пользовательских данных</h2>
+<p>Когда мы перейдем к пользовательским тегам, вы обнаружите, что теги очень часто представляют какие-то данные.</p>
+<pre><code class="language-imba">&lt;AppView[myData] title=&quot;Application&quot;&gt;
+</code></pre>
+<h2>Рендеринг списков</h2>
+<p>Вы могли заметить, что мы никогда не закрываем наши теги. Вместо использования фигурных скобок или ключевых слов &quot;начало/конец&quot;, блоки и теги ограничиваются отступами. Это может показаться странным в начале, но такой подход делает код очень читаемым и лаконичным. Поэтому, если мы хотим создать список с некоторыми дочерними элементами, мы просто пишем:</p>
+<pre><code class="language-imba">&lt;ul&gt;
+    &lt;li&gt; &quot;Understand indentation&quot;
+    &lt;li&gt; &quot;Get used to it&quot;
+    &lt;li&gt; &quot;Cherish it&quot;
+</code></pre>
+<p>Если у нас есть динамический список, мы можем использовать простой цикл <code>for in</code>:</p>
+<pre><code class="language-imba">&lt;ul&gt; for activity in [&quot;Eat&quot;, &quot;Sleep&quot;, &quot;Code&quot;]
+    &lt;li&gt; &lt;span.name&gt; activity
+</code></pre>
+<h2>Условный рендеринг</h2>
+<pre><code class="language-imba">&lt;div&gt;
+    if isLoggedIn
+        &lt;a href=&quot;/logout&quot;&gt; &quot;Log out&quot;
+    else
+        &lt;a href=&quot;/register&quot;&gt; &quot;Register&quot;
+</code></pre>
+<h2>Реактивный рендеринг</h2>
+<p>Когда мы объясняем пользовательские теги, вы узнаете, что все, что находится внутри <code>&lt;self&gt;</code>, по умолчанию является реактивным. Завершение тега с использованием <code>-&gt;</code> или <code>=&gt;</code> вместо <code>&gt;</code> помечает его как реактивный и позволяет вызывать render на теге для повторного рендеринга содержимого.</p>
+<pre><code class="language-imba">var number = 0
+
+var dead = Imba.mount &lt;div&gt;
+    &lt;span&gt; &quot;Dead time is {Date.new.toLocaleString}&quot;
+    &lt;span&gt; &quot;Number is {number}&quot;
+
+var live = Imba.mount &lt;div -&gt;
+    &lt;span&gt; &quot;Live time is {Date.new.toLocaleString}&quot;
+    &lt;span&gt; &quot;Number is {number}&quot;
+
+setInterval(&amp;,1000) do
+    number++
+    dead.render # ничего не меняется
+    live.render # содержимое обновляется
+</code></pre>
+<h2>Отрисовка в документе</h2>
+<p>Чтобы добавить теги в фактический документ, следует использовать Imba.mount(element, into). Если вы не указываете второй аргумент, то тег будет добавлен в document.body по умолчанию.</p>
+<pre><code>Imba.mount &lt;div -&gt; &lt;span&gt; &quot;Let's get started!&quot;
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>

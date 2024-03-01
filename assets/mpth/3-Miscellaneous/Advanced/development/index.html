@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Компилятор Imba написан на самом языке Imba, с использованием измененной версии генератора парсера &lt;a href=&quot;https://github.com/zaach/jison&quot;&gt;Jison&lt;/a&gt;. Командная строка imba доступна как утилита Node.js. Сам компилятор не зависит от Node и может быть запущен в любой среде JavaScript или в браузере.">
+    <link rel="stylesheet" href="../../../github.css">
+    <script defer src="../../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Development</h1>
+<p>Компилятор Imba написан на самом языке Imba, с использованием измененной версии генератора парсера <a href="https://github.com/zaach/jison">Jison</a>. Командная строка imba доступна как утилита Node.js. Сам компилятор не зависит от Node и может быть запущен в любой среде JavaScript или в браузере.</p>
+<p>Make sure you have the following tools installed</p>
+<ul>
+<li><a href="https://nodejs.org/en/">Node.js</a></li>
+<li><a href="https://yarnpkg.com/lang/en/">yarn</a> or <a href="https://www.npmjs.com">npm</a>.</li>
+</ul>
+<p>All the code for the language is available on <a href="https://github.com/imba/imba">GitHub</a></p>
+<pre><code class="language-bash"># use https
+git clone https://github.com/imba/imba.io
+# or ssh
+git@github.com:imba/imba.io.git
+cd imba
+yarn # npm install
+</code></pre>
+<h2>Making Changes</h2>
+<p>Если вы собираетесь исправить новую ошибку или добавить улучшение, пожалуйста, убедитесь, что вы обновили набор тестов, добавив тесты, охватывающие ваш код. В зависимости от ваших изменений вам возможно нужно будет расширить один из <a href="https://github.com/imba/imba/tree/master/test">существующих тестов</a>. Если вам нужно создать новый тест, ознакомьтесь с файлом <a href="https://github.com/imba/imba/blob/master/test/index.imba">test/index.imba</a>.</p>
+<h2>Running the Tests</h2>
+<p>Для запуска тестов предусмотрены несколько скриптов. В CI (Continuous Integration) все они выполняются автоматически, но вы можете сэкономить некоторое время, запустив их локально и исправив все проблемы перед открытием pull request (запроса на включение изменений).</p>
+<h2>Test Imba</h2>
+<pre><code class="language-bash">yarn run test # npm run test
+</code></pre>
+<h2>Imbapack and Webpack Tests</h2>
+<pre><code class="language-bash">yarn run test-webpack # npm run test-webpack
+</code></pre>
+<h2>Google Chrome Tests via Puppeteer</h2>
+<pre><code class="language-bash">yarn run test-chrome # npm run test-chrome
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>

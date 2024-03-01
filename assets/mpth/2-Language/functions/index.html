@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="В Imba есть два типа функций: &lt;em&gt;методы&lt;/em&gt; и &lt;em&gt;блоки&lt;/em&gt;. Imba автоматически возвращает последнее выражение из функции.">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Функции</h1>
+<p>В Imba есть два типа функций: <em>методы</em> и <em>блоки</em>. Imba автоматически возвращает последнее выражение из функции.</p>
+<h2>Методы</h2>
+<pre><code class="language-imba">def randomize
+    Math.random
+</code></pre>
+<pre><code class="language-imba"># Один аргумент
+def square num
+    num * num
+</code></pre>
+<pre><code class="language-imba"># Опциональные аргументы
+def call url, method = 'GET'
+    # do something here
+</code></pre>
+<pre><code class="language-imba"># Переменное количество аргументов
+def race winner, *rest
+    &quot;{winner} beat {rest.join(', ')}&quot;
+</code></pre>
+<pre><code class="language-imba"># Опциональные аргументы с обратным вызовом (callback)
+def save data, options = {}, &amp;callback
+    # do something here
+</code></pre>
+<pre><code class="language-imba"># Именованные параметры
+def animate values, ease: 'linear', duration: 1
+    # do something here
+</code></pre>
+<h2>Blocks</h2>
+<pre><code class="language-imba">var square = do |v| v * v
+</code></pre>
+<p>Блоки похожи на анонимные функции в JavaScript. Их можно присваивать и передавать. Они имеют свою собственную лексическую область видимости / замыкание, но нет динамической области видимости. Это означает, что self (как неявный, так и явный) внутри блока все еще ссылается на self внешней области видимости.</p>
+<p>Блоки могут быть переданы непосредственно при вызове функций, в качестве последнего аргумента.</p>
+<pre><code class="language-imba">[1,2,3,4].map do |num| num * 2
+
+item.save do
+    # callback trigger when item is saved?
+    console.log 'item was saved'
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>

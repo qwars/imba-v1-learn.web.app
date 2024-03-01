@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="We can use &lt;code&gt;&amp;lt;tag :eventname=handler&amp;gt;&lt;/code&gt; to listen to DOM events and run code when they’re triggered.">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title>Event Handling</title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Event Handling</h1>
+<h2>Listening to Events</h2>
+<p>We can use <code>&lt;tag :eventname=handler&gt;</code> to listen to DOM events and run code when they’re triggered.</p>
+<pre><code class="language-imba">tag App
+    prop counter
+    def render
+        &lt;self.bar&gt;
+            # handler will be called when clicking button
+            &lt;button :click=(do counter++)&gt; &quot;Increment&quot;
+            &lt;div&gt; &quot;count is {counter}&quot;
+
+Imba.mount &lt;App counter=0&gt;
+</code></pre>
+<p>In the example above we declared the handler inline. Usually it is better to define the handlers outside of the view, and decouple them from the event itself. This can be done in several ways.</p>
+<h2>Resolving Handlers</h2>
+<p>You can also supply a string as the handler (<code>&lt;div :click=&quot;doSomething&quot;&gt;</code>). In this case, Imba will look for a method of that name on the current context (self). This means that if you have defined methods on your custom tags, you can refer to these methods. Since binding events is such an integral part of developing web applications, Imba also has a special syntax for this.</p>
+<pre><code class="language-imba">tag App
+    prop counter
+
+    def increment
+        counter++
+
+    def step amount
+        counter += amount
+
+    def render
+        &lt;self.bar&gt;
+            # inline handler
+            &lt;button :click=(do counter++)&gt; &quot;+1&quot;
+            # reference to a method on self
+            &lt;button :click='increment'&gt; &quot;+1&quot;
+            # reference with arguments
+            &lt;button :click=['step',2]&gt; &quot;+2&quot;
+            # shorthand reference
+            &lt;button :click.increment&gt; &quot;+1&quot;
+            # shorthand reference with arguments
+            &lt;button :click.step(3)&gt; &quot;+3&quot;
+
+            &lt;div&gt; &quot;count is {counter}&quot;
+
+Imba.mount &lt;App counter=0&gt;
+</code></pre>
+<blockquote>
+<p><code>tap</code> is an alias for <code>click</code> that works across mobile, tablets, and desktops.</p>
+</blockquote>
+<h2>Event Modifiers</h2>
+<p>Inspired by vue.js, Imba also supports modifiers. More often than not, event handlers are simple functions that do some benign thing with the incoming event (stopPropagation, preventDefault etc), and then continues on with the actual logic. By using modifiers directly where we bind to an event, our handlers never need to know about the event in the first place.</p>
+<pre><code># call preventDefault on the submit-event, then call doSomething
+&lt;form :submit.prevent.doSomething&gt;
+</code></pre>
+<blockquote>
+<p>What is the difference between a modifier and a handler in this case? There isn't really a difference. In fact, the modifiers are implemented as methods on element, and you can define custom modifiers as well.</p>
+</blockquote>
+<ul>
+<li><code>.stop</code> - stops event from propagating</li>
+<li><code>.prevent</code> - calls preventDefault on event</li>
+<li><code>.silence</code> - explicitly tell Imba not to broadcast event to schedulers</li>
+<li><code>.self</code> - only trigger subsequent handlers if event.target is the element itself</li>
+</ul>
+<h3>Key Modifiers</h3>
+<p>For keyboard events (keydown, keyup, keypress) there are also some very handy modifiers available.</p>
+<pre><code># trigger addItem when enter is pressed
+&lt;input type='text' :keydown.enter.addItem&gt;
+
+# multiple handlers for the same event is allowed
+# trigger gotoPrev/gotoNext when pressing up/down keys
+&lt;div :keydown.up.gotoPrev :keydown.down.gotoNext&gt;
+</code></pre>
+<ul>
+<li>.left</li>
+<li>.right</li>
+<li>.up</li>
+<li>.down</li>
+<li>.enter</li>
+<li>.tab</li>
+<li>.esc</li>
+<li>.space</li>
+<li>.del</li>
+</ul>
+<h3>System Modifier Keys</h3>
+<ul>
+<li>.ctrl</li>
+<li>.alt</li>
+<li>.shift</li>
+<li>.meta</li>
+</ul>
+<pre><code># only trigger when ctrl is pressed
+&lt;button :click.ctrl.myHandler&gt;
+
+# only trigger when shift is pressed
+&lt;button :click.shift.myHandler&gt;
+
+# the order of modifiers matters;
+# always prevent default action, but only trigger myHandler if alt as pressed
+&lt;button :click.prevent.alt.myHandler&gt;
+</code></pre>
+<h3>Mouse Button Modifiers</h3>
+<ul>
+<li>.left</li>
+<li>.right</li>
+<li>.middle</li>
+</ul>
+<h2>Declaring default handlers</h2>
+<p>When an event is processed by Imba, it will also look for an <code>on(eventname)</code> method on the tags as it traverses up from the original target.</p>
+<pre><code>tag App
+    def onsubmit e
+        e.prevent
+        window.alert('Tried to submit!')
+
+    def render
+        &lt;self&gt;
+            &lt;form&gt;
+                &lt;input type='text'&gt;
+                &lt;button type='submit'&gt; &quot;Submit&quot;
+
+Imba.mount &lt;App&gt;
+</code></pre>
+<h2>Custom events</h2>
+<h4><code>tag.trigger(name, data = null)</code></h4>
+<p>Custom events will bubble like native events, but are dispatched and processed directly inside the Imba.Event system, without generating a real browser Event. Optionally supply data for the event in the second argument. Here is a rather complex example illustrating several ways of dealing with custom events</p>
+<pre><code class="language-imba">tag Todo &lt; li
+    def clickRename
+        trigger('itemrename',data)
+
+    def clickTitle
+        trigger('itemtoggle',data)
+
+    def render
+        &lt;self .done=data:done&gt; 
+            &lt;span :tap.clickTitle&gt; data:title
+            &lt;button :tap.clickRename&gt; 'rename'
+
+tag Todos &lt; ul
+    def setup
+        @items = [
+            {title: &quot;Remember milk&quot;, done: false}
+            {title: &quot;Test custom events&quot;, done: false}
+        ]
+
+    # the inner todo triggers a custom itemtoggle event when tapped
+    # which will bubble up and eventually trigger onitemtoggle here
+    def onitemtoggle e
+        e.data:done = !e.data:done
+
+    def onitemrename e
+        var todo = e.data
+        todo:title = window.prompt(&quot;New title&quot;,todo:title)
+
+    def render
+        &lt;self&gt; for item in @items
+            &lt;Todo[item]&gt;
+
+Imba.mount &lt;Todos&gt;
+</code></pre>
+<h2>Event Interface</h2>
+<p>Imba handles all events in the dom through a single manager, listening at the root of your document. Each native event is wrapped in an Imba.Event-instance, which has a few methods worth knowing:</p>
+<pre><code class="language-imba">tag CustomElement
+    def onclick event
+        event.target # returns the Imba.Tag target for event
+        event.native # returns the native DOMEvent
+        event.type # returns the type of event, in this case 'click'
+        event.prevent # calls preventDefault on the native event
+        event.stop # calls stopPropagation on the native event
+
+        # a bunch of methods accessing native event
+        event.x # Event:x
+        event.y # event.native:y
+        event.button # event.native:button
+        event.which # event.native:which
+        event.alt # event.native:altKey
+        event.shift # shiftKey
+        event.ctrl # event.native:ctrlKey
+        event.meta # event.native:metaKey
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>

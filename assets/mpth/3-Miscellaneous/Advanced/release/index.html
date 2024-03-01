@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="There is currently no official release schedule for the Imba project. If a critical bug has been found
+that will warrant a new release, but this will likely change with a formal release schedule when development
+activity is back up.">
+    <link rel="stylesheet" href="../../../github.css">
+    <script defer src="../../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Release</h1>
+<p>There is currently no official release schedule for the Imba project. If a critical bug has been found
+that will warrant a new release, but this will likely change with a formal release schedule when development
+activity is back up.</p>
+<p>The rest of this page serves as a checklist for the release manager.</p>
+<h2>Checklist</h2>
+<ul>
+<li>[ ] Make sure you have run <code>npm build</code>.</li>
+<li>[ ] Verify your current version before bumping <code>npm version</code>.</li>
+</ul>
+<p>If the version looks correct you can proceed by bumping the patch version</p>
+<ul>
+<li>[ ] <code>npm version patch</code>, if you want to change the other versions the available options are (<code>major</code>, <code>minor</code>)</li>
+<li>[ ] Verify the version looks good by running <code>npm version</code> and with git <code>git tag</code>.</li>
+</ul>
+<p>If both look good you can proceed by pushing your changes to GitHub</p>
+<ul>
+<li>[ ] <code>git push origin master &amp;&amp; git push origin --tags</code></li>
+<li>[ ] Create release notes that are basically a summary of the output in <code>git log 1.4.3..v1.4.7</code></li>
+<li>[ ] Use those release notes on the GitHub releases page.</li>
+<li>[ ] Then finally publish to <a href="https://www.npmjs.com/package/imba">npmjs.com</a> by running <code>npm publish</code></li>
+<li>[ ] Make a tweet on the @imbajs account</li>
+</ul>
+<h3>github-releasenotes</h3>
+<p>If you don't like writing the release notes manually / copy paste then checkout <a href="https://github.com/github-tools/github-release-notes">github-release-notes</a>.</p>
+
+      </div>
+    </div>
+  </body>
+</html>

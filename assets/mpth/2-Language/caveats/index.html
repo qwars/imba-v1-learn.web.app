@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Если вы приходите из мира JavaScript, вам необходимо узнать несколько вещей, когда изучаете Imba. Imba не похож на CoffeeScript, в том смысле, что он не пытается быть всего лишь немного отличающимся диалектом JavaScript. Imba компилируется в JavaScript, но синтаксис и семантика Imba влияют на структуру вашего кода.">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Ограничения</h1>
+<p>Если вы приходите из мира JavaScript, вам необходимо узнать несколько вещей, когда изучаете Imba. Imba не похож на CoffeeScript, в том смысле, что он не пытается быть всего лишь немного отличающимся диалектом JavaScript. Imba компилируется в JavaScript, но синтаксис и семантика Imba влияют на структуру вашего кода.</p>
+<p>Если вы не знакомы с Ruby, многие элементы Imba могут показаться немного запутанными, пока вы не поймете концепции неявного self и неявного вызова функции. Любой идентификатор со строчной буквы, который не объявлен явно как переменная, рассматривается как неявный вызов метода на self текущей области видимости. analyzer / highlighter синтаксиса поможет, выделяя переменные по-разному.</p>
+<h2>Неявный self</h2>
+<pre><code class="language-imba">hello # компилируется в  this.hello()
+# поскольку hello не является объявленной переменной
+# принимая 'self' в качестве неявного контекста.
+</code></pre>
+<pre><code class="language-imba"># объявить переменную hello
+var hello = &quot;string&quot;
+
+# Теперь hello будет просто обычным доступом к переменной.
+hello # компилируется в   hello
+</code></pre>
+<blockquote>
+<p>У Imba есть некоторые предопределенные глобальные переменные: <code>window</code>, <code>document</code>, <code>console</code>, <code>process</code>, <code>setTimeout</code>, <code>setInterval</code>, <code>clearTimeout</code>, <code>clearInterval</code>, <code>parseInt</code>, <code>parseFloat</code>, <code>__dirname</code></p>
+<p>Это означает, что эти переменные всегда будут разрешаться как переменные. Если вы определили метод console в объекте, его необходимо вызвать явно через self: <code>self.console('something')</code></p>
+</blockquote>
+<h3>внешний</h3>
+<pre><code class="language-imba">extern something
+something
+</code></pre>
+<h3>self vs this</h3>
+<p>В Imba, self является неявным контекстом, подобно self в Ruby. Как вы скоро узнаете, self не прямо отображается на this в JavaScript. Self относится к this ближайшей «замкнутой» области видимости. Классы и методы являются замкнутыми областями видимости, в то время как функциональные выражения ими не являются. Когда вы привыкнете к этому, вы обнаружите, что это одна из вещей, которые делают программирование на Imba очень приятным.</p>
+<pre><code class="language-imba">class Item
+
+    def update data
+        # do something
+        self
+
+    def fetch
+        request('/some-url') do |data|
+            # functions as blocks are not closed scopes,
+            # so the implicit self will still refer to the
+            # self of the outer method.
+            self.update data
+
+</code></pre>
+<blockquote>
+<p>this <em>всегда</em> относится к this, который вы знаете и любите (или ненавидите) из JavaScript. Поэтому, если вам действительно необходимо получить доступ к this внутри обратного вызова или блока кода, вы должны использовать this явно.</p>
+</blockquote>
+<h2>Неявный вызов</h2>
+<p>В Imba вы вызываете методы с помощью обычного оператора точки. В JavaScript car.start обратится к свойству start объекта car. В Imba это действительно <em>вызовет</em> метод start объекта car. Круглые скобки являются необязательными. Подробнее о причинах такого поведения можно прочитать [здесь]. Если вы думаете в терминах JavaScript, это может показаться неудобным и запутанным. То же самое поведение можно видеть в языках, таких как Ruby.</p>
+<p>Как же тогда получить доступ к свойствам? В Imba вы можете сделать это с помощью car['start'], так же, как в JavaScript. Поскольку доступ к свойствам все еще широко используется при работе с внешними библиотеками, написанными на JavaScript, у нас также есть краткий синтаксис, использующий двоеточие без пробелов: car:start. Для новых пользователей это может вызывать некоторые сложности, но после нескольких часов работы с кодом это станет для вас естественным.</p>
+<blockquote>
+<p>Если вы постоянно используете object:access в своем коде на Imba, это, скорее всего, связано с тем, что вы мыслите в терминах JavaScript. В Imba класс должен предоставлять информацию и поведение через методы.</p>
+</blockquote>
+<p>В отличие от Ruby, в Imba также есть неявные сеттеры. Поскольку в Imba все переменные явно объявлены, присваивание значения недекларированной переменной воспринимается как обычный вызов метода. Например, name = 1 будет обращаться к сеттеру и будет компилироваться</p>
+<h2>Arguments</h2>
+<p>Аргументы метода могут быть доступны через специальное свойство $0. Каждый отдельный аргумент может быть доступен через $n, где n - это номер аргумента, начиная с 1.</p>
+<pre><code class="language-imba">def method
+    $0 # -&gt; arguments
+    $1 # -&gt; arguments[0]
+    $2 # -&gt; arguments[1]
+
+# sometimes practical for inline methods
+var doubles = [1,2,3].map do $1 * 2
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>

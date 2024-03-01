@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Виртуальный DOM был фантастическим инновационным решением. Благодаря процессу обновления/заплатки DOM для отражения изменений состояния, стало возможным писать представления (виды) в декларативном стиле. Благодаря этому процесс обновления DOM значительно ускорился.">
+    <link rel="stylesheet" href="../../../github.css">
+    <script defer src="../../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Performance</h1>
+<p>Виртуальный DOM был фантастическим инновационным решением. Благодаря процессу обновления/заплатки DOM для отражения изменений состояния, стало возможным писать представления (виды) в декларативном стиле. Благодаря этому процесс обновления DOM значительно ускорился.</p>
+<p>К сожалению, виртуальные DOM-ы все еще медленны. Imba выбрала совершенно другой подход, который оказался <em>гораздо</em> быстрее.</p>
+<blockquote>
+<p><a href="https://scrimba.com/p/c6B9rAM">Screencast about Imba performance</a></p>
+</blockquote>
+<h3>The Memoized DOM</h3>
+<pre><code class="language-imba">var tip = &quot;Item&quot;
+var div = &lt;div.large title=tip&gt; &quot;Hello&quot;
+</code></pre>
+<p>Хотя теги в Imba выглядят декларативно, они компилируются в ряд операций, создающих и изменяющих состояние тега.</p>
+<pre><code class="language-javascript">var tip = &quot;Item&quot;;
+var div = createElement('div').flag('large').setTitle(tip).setText(&quot;Hello&quot;);
+</code></pre>
+<p>Что, если мы разделим создание div и остальные операции?</p>
+<pre><code class="language-javascript">var tip = &quot;Item&quot;;
+var div = createElement('div');
+var render = function(){
+    div.flag('large').setTitle(tip).setText(&quot;Hello&quot;);
+}
+</code></pre>
+<p>Теперь, атрибуты будут применяться к div каждый раз, когда мы вызываем render. Если мы изменяем значение tip и вызываем render снова, то div будет иметь новый атрибут title. Это лишь небольшая иллюстрация того, что делает компилятор Imba под капотом.</p>
+<pre><code class="language-imba">tag Component
+    def render
+        &lt;self&gt;
+            &lt;h1.title&gt; &quot;Welcome&quot;
+            &lt;p.desc&gt; &quot;I am a component&quot;
+</code></pre>
+<p>Пользовательский компонент, приведенный выше, компилируется в следующий JavaScript-код:</p>
+<pre><code class="language-javascript">var Component = Imba.defineTag('Component', function(tag){
+    tag.prototype.render = function (){
+        var $ = this.$;
+        return this.setChildren($.$ = $.$ || [
+            createElement('h1',$,0,this).flag('title').setText(&quot;Welcome&quot;),
+            createElement('p',$,1,this).flag('desc').setText(&quot;I am a component&quot;)
+        ]).synced();
+    };
+});
+</code></pre>
+<p>Если вы тщательно посмотрите сюда, то заметите, что при первом вызове render создаются два дочерних элемента и устанавливаются их атрибуты. При следующем вызове render массив дочерних элементов уже будет закэширован, поэтому ничего не произойдет. Это нормально, поскольку здесь нет динамического содержимого или атрибутов.</p>
+<p>Что произойдет, если мы добавим динамический атрибут?</p>
+<pre><code class="language-imba">tag Component
+    def render
+        &lt;self&gt;
+            &lt;h1.title&gt; &quot;Welcome&quot;
+            # Include 'red' className 50% of the time, randomly
+            &lt;p.desc .red=(Math.random &gt; 0.5)&gt; &quot;Roulette&quot;
+</code></pre>
+<p>компилируется в следующий код:</p>
+<pre><code class="language-javascript">var Component = Imba.defineTag('Component', function(tag){
+    tag.prototype.render = function (){
+        var $ = this.$;
+        return this.setChildren($.$ = $.$ || [
+            _1('h1',$,0,this).flag('title').setText(&quot;Welcome&quot;),
+            _1('p',$,1,this).flag('desc').setText(&quot;Roulette&quot;)
+        ],2).synced((
+            $[1].flagIf('red',Math.random() &gt; 0.5)
+        ,true));
+    };
+});
+</code></pre>
+<p>Теперь элементы будут созданы при первом рендеринге, но динамическая часть была выделена из закэшированных дочерних элементов и выполняется при каждом рендеринге. Это ядро концепции, которую Imba использует для своего молниеносного рендеринга. Хотя она более сложная, та же самая концепция применяется для условий, циклов и всего остального внутри деревьев тегов.</p>
+<pre><code class="language-imba">tag Component
+    def render
+        &lt;self&gt;
+            &lt;h1.title&gt; &quot;Welcome&quot;
+            &lt;p.desc .red=(Math.random &gt; 0.5)&gt; &quot;Roulette&quot;
+            &lt;ul.list&gt; for item in data
+                &lt;TodoItem&gt; item
+</code></pre>
+<p>компилируется в следующий код:</p>
+<pre><code class="language-javascript">var Component = Imba.defineTag('Component', function(tag){
+    tag.prototype.render = function (){
+        var $ = this.$, self = this;
+        return self.$open(0).setChildren($.$ = $.$ || [
+            _1('h1',$,0,self).flag('title').setText(&quot;Welcome&quot;),
+            _1('p',$,1,self).flag('desc').setText(&quot;Roulette&quot;),
+            _1('ul',$,2,self).flag('list')
+        ],2).synced((
+            $[1].flagIf('red',(Math.random() &gt; 0.5)),
+            $[2].setContent((function($0) {
+                for (let i = 0, ary = self.data(), len = $0.taglen = ary.length; i &lt; len; i++) {
+                    ($0[i] || _1(TodoItem,$0,i)).setContent(ary[i],3).end();
+                };return $0;
+            })($[3] || _2($,3,$[2])),4)
+        ,true));
+    };
+});
+</code></pre>
+<p>При просмотре скомпилированного вывода для более сложных тегов начинает становиться понятным, что такой подход был бы сложным без компилируемого в JavaScript языка. Однако концепция очень проста, и именно она позволяет Imba быть в десятки раз быстрее, чем популярные фреймворки, используемые в настоящее время.</p>
+
+      </div>
+    </div>
+  </body>
+</html>

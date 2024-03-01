@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Вы можете легко определить свои собственные теги / компоненты ( tag/component ) так же просто, как создавать классы. Они похожи на компоненты в React. Теги определяются с использованием ключевого слова tag:">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Пользовательские теги</h1>
+<h2>Объявление тегов</h2>
+<p>Вы можете легко определить свои собственные теги / компоненты ( tag/component ) так же просто, как создавать классы. Они похожи на компоненты в React. Теги определяются с использованием ключевого слова tag:</p>
+<pre><code class="language-imba">tag App
+    # Пользовательские методы экземпляра, свойства и т.д.
+
+# Создание экземпляра приложения - так же, как и для любого другого тега.
+let app = &lt;App.main&gt; &lt;h1&gt; &quot;Hello&quot;
+</code></pre>
+<p>Ваши пользовательские теги по умолчанию наследуются от <code>div</code>, но они могут наследоваться от любого другого тега. Вы также можете определять методы экземпляра для них.</p>
+<pre><code class="language-imba"># Определение пользовательского тега, наследующего от form (форма), может выглядеть следующим образом
+tag RegisterForm &lt; form
+    def onsubmit event
+        # Объявление обработчиков событий в виде методов
+        console.log &quot;submitted&quot;
+
+    def someMethod
+        console.log &quot;hello&quot;
+        self
+
+# Создать экземпляр приложения - точно так же, как и любого другого тега.
+let form = &lt;RegisterForm&gt;
+form.someMethod # =&gt; &quot;hello&quot;
+</code></pre>
+<blockquote>
+<p>Когда вы объявляете tag SomeComponent, вы объявляете новый <em>тип</em> тега, а не экземпляр. Это аналогично объявлению class SomeClass. &lt;SomeComponent&gt; создает новый <em>экземпляр</em> этого тега, точно так же, как SomeClass.new создает новый экземпляр этого класса.</p>
+</blockquote>
+<h2>Пользовательский рендеринг</h2>
+<p>Как и в компонентах React, вы можете определить, как должны отрисовываться пользовательские теги, объявив метод render:</p>
+<pre><code class="language-imba">tag App
+    def render
+        &lt;self&gt; &lt;h1&gt; &quot;Hello world&quot;
+
+let app = &lt;App.main&gt;
+# DOM-дерево приложения теперь выглядит следующим образом:
+# &lt;div class='App main'&gt;&lt;h1&gt;Hello world&lt;/h1&gt;&lt;/div&gt;
+</code></pre>
+<blockquote>
+<p><code>&lt;self&gt;</code> внутри метода render заслуживает некоторого объяснения. В Imba экземпляры тегов прямо связаны с их реальным DOM-элементом. <code>&lt;self&gt;</code> ссылается на сам компонент и является способом сказать &quot;теперь я хочу, чтобы содержимое внутри <code>self</code> выглядело так, как описано ниже. Это важно для понимания&quot;.</p>
+</blockquote>
+<pre><code class="language-imba">tag Wrong
+    def render
+        &lt;h1&gt; &quot;Hello {Math.random}&quot;
+
+let wrong = &lt;Wrong&gt;
+# wrong.render просто создаст новый элемент h1
+# каждый раз, когда он вызывается. DOM-элемент &quot;wrong&quot; будет
+# по-прежнему не будет иметь дочерних элементов.
+
+tag Right
+    def render
+        &lt;self&gt; &lt;h1&gt; &quot;Hello {Math.random}&quot;
+let right = &lt;Right&gt;
+# right.render теперь будет обновлять своё DOM-дерево каждый раз.
+# его вызов, гарантируя, что DOM-структура фактически отражает изменения.
+# представление, объявленное внутри `&lt;self&gt;`.
+</code></pre>
+<h2>Наследование</h2>
+<p>Пользовательские теги могут наследоваться от других пользовательских тегов или от встроенных тегов. Например, если вы хотите создать пользовательский компонент формы, вы можете просто наследоваться от тега <code>form</code>:</p>
+<pre><code class="language-imba"># Определите пользовательский тег, наследующийся от form
+tag RegisterForm &lt; form
+
+let view = &lt;RegisterForm&gt;
+# DOM-элемент представления теперь имеет тип &quot;form&quot;.
+# html: &lt;form class='RegisterForm'&gt;&lt;/form&gt;
+</code></pre>
+<h2>Свойства</h2>
+<pre><code class="language-imba">tag App
+
+    # Объявление пользовательских свойств может быть выполнено следующим образом:
+    prop slug
+    
+    # Объявление свойств с значениями по умолчанию может выглядеть следующим образом:
+    prop greeting default: 'Hello human!'
+
+    def render
+        &lt;self&gt;
+            &lt;h1&gt; &quot;Slug is: {slug}&quot;
+            if slug == '/home'
+                &lt;div&gt; &quot;{greeting} You are home&quot;
+
+Imba.mount &lt;App slug='/home'&gt;
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>

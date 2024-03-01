@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Команда require работает точно так же, как и в чистом JavaScript.">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Модули</h1>
+<h3>export</h3>
+<pre><code class="language-imba">export var TYPE = 3
+
+export def mult a,b
+    a * b
+
+export class Todo
+    def initialize
+        self
+
+export tag TodoView
+    def render
+        &lt;self&gt; data:title
+</code></pre>
+<h3>import</h3>
+<pre><code class="language-imba"># index.imba
+import {mult,Todo,TodoView,TYPE} from './somefile'
+
+var todo = Todo.new
+var result = mult(1,2)
+var view = &lt;TodoView[todo]&gt;
+
+</code></pre>
+<h3>require</h3>
+<pre><code class="language-imba">var fs = require 'fs'
+var stuff = require './somefile'
+
+var body = fs.readFileSync('something.txt')
+var todo = stuff.Todo.new
+var result = stuff.mult(1,2)
+</code></pre>
+<p>Команда require работает точно так же, как и в чистом JavaScript.</p>
+
+      </div>
+    </div>
+  </body>
+</html>

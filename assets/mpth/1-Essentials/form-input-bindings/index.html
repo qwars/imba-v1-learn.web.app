@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="1&gt;Поля Input в формах&lt;/h1&gt;
+&lt;h2&gt;Основное использование&lt;/h2&gt;
+&lt;h3&gt;Text&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;language-imba&quot;&gt;var store = {message: &amp;quot;&amp;quot;}
+Imba.mount &amp;lt;section -&amp;gt;
+    &amp;lt;input[store:message]&amp;gt;
+    &amp;lt;div&amp;gt; &amp;quot;Message is {store:message}&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Range&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;language-imba&quot;&gt;var data = {counter: 50}
+Imba.mount &amp;lt;div -&amp;gt;
+    &amp;lt;input[data:counter] type='range' min=0 max=100 step=1&amp;gt;
+    &amp;lt;div&amp;gt; &amp;quot;Count is {data:counter}&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Checkbox&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;language-imba&quot;&gt;var store = {
+    message: &amp;quot;&amp;quot;
+    enabled: false
+}
+Imba.mount &amp;lt;div.grid -&amp;gt;
+    &amp;lt;input[store:enabled] type='checkbox'&amp;gt;
+    &amp;lt;span&amp;gt; &amp;quot;enabled: {store:enabled}&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Multiple checkboxes&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;language-imba&quot;&gt;var data = {skills: [&amp;quot;Literacy&amp;quot;]}
+Imba.mount &amp;lt;div -&amp;gt;
+    &amp;lt;header.bar&amp;gt; for option in ['React','Vue','Imba','Angular','Ember']
+        &amp;lt;label.pill&amp;gt;
+            &amp;lt;input[data:skills] type='checkbox' value=option&amp;gt;
+            &amp;lt;span&amp;gt; option
+    &amp;lt;div&amp;gt; &amp;quot;Your skills: {data:skills.join(&amp;quot;, &amp;quot;)}&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Select &amp;amp; Radio&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;language-imba&quot;&gt;var options = ['React','Vue','Imba','Angular','Ember']
+var data = {choice: null}
+
+Imba.mount &amp;lt;div -&amp;gt;
+    # binding select to choice
+    &amp;lt;select[data:choice]&amp;gt; for item in options
+        &amp;lt;option&amp;gt; item
+
+    # render an input radio for every option
+    &amp;lt;header.bar&amp;gt; for item in options
+        &amp;lt;label.pill&amp;gt;
+            &amp;lt;input[data:choice] type='radio' value=item&amp;gt;
+            &amp;lt;span&amp;gt; item
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Rich values&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;language-imba&quot;&gt;
+var options = [
+    { name: 'React', url: &amp;quot;reactjs.org&amp;quot; }
+    { name: 'Vue', url: &amp;quot;vuejs.org&amp;quot; }
+    { name: 'Imba', url: &amp;quot;imba.io&amp;quot; }
+    { name: 'Angular', url: &amp;quot;angular.io&amp;quot; }
+]
+
+var data = {choice: &amp;quot;&amp;quot;}
+
+Imba.mount &amp;lt;div -&amp;gt;
+    # binding select to rich objects
+    &amp;lt;select[data:choice]&amp;gt;
+        &amp;lt;option disabled value=&amp;quot;&amp;quot;&amp;gt; &amp;quot;Please select one&amp;quot;
+        for item in options
+            &amp;lt;option value=item&amp;gt; item:name
+
+    if let framework = data:choice
+        &amp;lt;div&amp;gt;
+            &amp;lt;h2&amp;gt; &amp;quot;Framework of choice:&amp;quot;
+            &amp;lt;div&amp;gt; &amp;quot;{framework:name} ({framework:url})&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Пример&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;language-imba&quot;&gt;
+var store =
+    people: [{
+        name: &amp;quot;&amp;quot;
+        skills: [&amp;quot;Curiosity&amp;quot;,&amp;quot;Literacy&amp;quot;]
+        confirmed: false
+    }]
+
+tag Form &amp;lt; form    
+    prop confirmed
+    prop person
+
+    def addSkill e
+        person:skills.push(e.target.value)
+        e.target.value = ''
+
+    def onsubmit e
+        e.prevent
+        window.alert(&amp;quot;Submitted!&amp;quot;)
+
+    def render
+        &amp;lt;self&amp;gt;
+            &amp;lt;input[person:name] type='text' placeholder=&amp;quot;Your name...&amp;quot;&amp;gt;
+            &amp;lt;input placeholder=&amp;quot;Add skill...&amp;quot; :keyup.enter.prevent.addSkill&amp;gt;
+            &amp;lt;div.bar&amp;gt; for skill in person:skills
+                &amp;lt;label.pill&amp;gt;
+                    &amp;lt;input[person:skills] type='checkbox' value=skill&amp;gt;
+                    &amp;lt;span&amp;gt; skill
+            &amp;lt;footer&amp;gt;
+                &amp;lt;label.pill&amp;gt;
+                    &amp;lt;input[confirmed] type='checkbox'&amp;gt;
+                    &amp;lt;span&amp;gt; &amp;quot;I, {person:name or &amp;quot;Unnamed&amp;quot;}, confirm this&amp;quot;
+                &amp;lt;button disabled=!confirmed&amp;gt; &amp;quot;Submit Form&amp;quot;
+
+Imba.mount &amp;lt;Form person=store:people[0]&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Поля Input в формах</h1>
+<h2>Основное использование</h2>
+<h3>Text</h3>
+<pre><code class="language-imba">var store = {message: &quot;&quot;}
+Imba.mount &lt;section -&gt;
+    &lt;input[store:message]&gt;
+    &lt;div&gt; &quot;Message is {store:message}&quot;
+</code></pre>
+<h3>Range</h3>
+<pre><code class="language-imba">var data = {counter: 50}
+Imba.mount &lt;div -&gt;
+    &lt;input[data:counter] type='range' min=0 max=100 step=1&gt;
+    &lt;div&gt; &quot;Count is {data:counter}&quot;
+</code></pre>
+<h3>Checkbox</h3>
+<pre><code class="language-imba">var store = {
+    message: &quot;&quot;
+    enabled: false
+}
+Imba.mount &lt;div.grid -&gt;
+    &lt;input[store:enabled] type='checkbox'&gt;
+    &lt;span&gt; &quot;enabled: {store:enabled}&quot;
+</code></pre>
+<h3>Multiple checkboxes</h3>
+<pre><code class="language-imba">var data = {skills: [&quot;Literacy&quot;]}
+Imba.mount &lt;div -&gt;
+    &lt;header.bar&gt; for option in ['React','Vue','Imba','Angular','Ember']
+        &lt;label.pill&gt;
+            &lt;input[data:skills] type='checkbox' value=option&gt;
+            &lt;span&gt; option
+    &lt;div&gt; &quot;Your skills: {data:skills.join(&quot;, &quot;)}&quot;
+</code></pre>
+<h3>Select &amp; Radio</h3>
+<pre><code class="language-imba">var options = ['React','Vue','Imba','Angular','Ember']
+var data = {choice: null}
+
+Imba.mount &lt;div -&gt;
+    # binding select to choice
+    &lt;select[data:choice]&gt; for item in options
+        &lt;option&gt; item
+
+    # render an input radio for every option
+    &lt;header.bar&gt; for item in options
+        &lt;label.pill&gt;
+            &lt;input[data:choice] type='radio' value=item&gt;
+            &lt;span&gt; item
+</code></pre>
+<h3>Rich values</h3>
+<pre><code class="language-imba">
+var options = [
+    { name: 'React', url: &quot;reactjs.org&quot; }
+    { name: 'Vue', url: &quot;vuejs.org&quot; }
+    { name: 'Imba', url: &quot;imba.io&quot; }
+    { name: 'Angular', url: &quot;angular.io&quot; }
+]
+
+var data = {choice: &quot;&quot;}
+
+Imba.mount &lt;div -&gt;
+    # binding select to rich objects
+    &lt;select[data:choice]&gt;
+        &lt;option disabled value=&quot;&quot;&gt; &quot;Please select one&quot;
+        for item in options
+            &lt;option value=item&gt; item:name
+
+    if let framework = data:choice
+        &lt;div&gt;
+            &lt;h2&gt; &quot;Framework of choice:&quot;
+            &lt;div&gt; &quot;{framework:name} ({framework:url})&quot;
+</code></pre>
+<h3>Пример</h3>
+<pre><code class="language-imba">
+var store =
+    people: [{
+        name: &quot;&quot;
+        skills: [&quot;Curiosity&quot;,&quot;Literacy&quot;]
+        confirmed: false
+    }]
+
+tag Form &lt; form    
+    prop confirmed
+    prop person
+
+    def addSkill e
+        person:skills.push(e.target.value)
+        e.target.value = ''
+
+    def onsubmit e
+        e.prevent
+        window.alert(&quot;Submitted!&quot;)
+
+    def render
+        &lt;self&gt;
+            &lt;input[person:name] type='text' placeholder=&quot;Your name...&quot;&gt;
+            &lt;input placeholder=&quot;Add skill...&quot; :keyup.enter.prevent.addSkill&gt;
+            &lt;div.bar&gt; for skill in person:skills
+                &lt;label.pill&gt;
+                    &lt;input[person:skills] type='checkbox' value=skill&gt;
+                    &lt;span&gt; skill
+            &lt;footer&gt;
+                &lt;label.pill&gt;
+                    &lt;input[confirmed] type='checkbox'&gt;
+                    &lt;span&gt; &quot;I, {person:name or &quot;Unnamed&quot;}, confirm this&quot;
+                &lt;button disabled=!confirmed&gt; &quot;Submit Form&quot;
+
+Imba.mount &lt;Form person=store:people[0]&gt;
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>

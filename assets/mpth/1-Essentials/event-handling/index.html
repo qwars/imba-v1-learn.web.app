@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Мы можем использовать &lt;code&gt;&amp;lt;tag :имя-события=обработчик&amp;gt;&lt;/code&gt; ( &lt;code&gt;&amp;lt;tag :eventname=handler&amp;gt;&lt;/code&gt; ), чтобы прослушивать события DOM и выполнять код при их возникновении.">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Обработка событий</h1>
+<h2>Прослушание событий</h2>
+<p>Мы можем использовать <code>&lt;tag :имя-события=обработчик&gt;</code> ( <code>&lt;tag :eventname=handler&gt;</code> ), чтобы прослушивать события DOM и выполнять код при их возникновении.</p>
+<pre><code class="language-imba">tag App
+    prop counter
+    def render
+        &lt;self.bar&gt;
+            # будет вызываться при клике на кнопку.
+            &lt;button :click=(do counter++)&gt; &quot;Increment&quot;
+            &lt;div&gt; &quot;count is {counter}&quot;
+
+Imba.mount &lt;App counter=0&gt;
+</code></pre>
+<p>В приведенном выше примере мы определили обработчик встроенным образом. Обычно лучше определять обработчики событий вне представления и отделить их от самих событий. Это можно сделать несколькими способами.</p>
+<h2>Разрешение обработчиков</h2>
+<p>Вы также можете указать строку в качестве обработчика (<code>&lt;div :click=&quot;doSomething&quot;&gt;</code>). В этом случае Imba будет искать метод с таким именем в текущем контексте (self). Это означает, что если вы определили методы в своих пользовательских тегах, вы можете ссылаться на эти методы. Так как привязка событий является неотъемлемой частью разработки веб-приложений, Imba также имеет специальный синтаксис для этого.</p>
+<pre><code class="language-imba">tag App
+    prop counter
+
+    def increment
+        counter++
+
+    def step amount
+        counter += amount
+
+    def render
+        &lt;self.bar&gt;
+            # Встроенный обработчик
+            &lt;button :click=(do counter++)&gt; &quot;+1&quot;
+            # Ссылка на метод объекта `self`
+            &lt;button :click='increment'&gt; &quot;+1&quot;
+            # Ссылка с аргументами
+            &lt;button :click=['step',2]&gt; &quot;+2&quot;
+            # Сокращенная ссылка
+            &lt;button :click.increment&gt; &quot;+1&quot;
+            # Сокращенная ссылка с аргументами
+            &lt;button :click.step(3)&gt; &quot;+3&quot;
+
+            &lt;div&gt; &quot;count is {counter}&quot;
+
+Imba.mount &lt;App counter=0&gt;
+</code></pre>
+<blockquote>
+<p><code>tap</code> - это псевдоним для <code>click</code>, который работает на мобильных устройствах, планшетах и настольных компьютерах.</p>
+</blockquote>
+<h2>Модификаторы событий</h2>
+<p>Вдохновленный Vue.js, Imba также поддерживает модификаторы. В большинстве случаев обработчики событий - простые функции, которые выполняют некоторые действия с входящим событием (stopPropagation, preventDefault и т.д.) и затем продолжают выполнение фактической логики. Используя модификаторы прямо там, где мы привязываемся к событию, наши обработчики не нуждаются в информации о событии в первую очередь.</p>
+<pre><code># Вызовите preventDefault на событии submit, а затем вызовите doSomething.
+&lt;form :submit.prevent.doSomething&gt;
+</code></pre>
+<blockquote>
+<p>В этом случае разница между модификатором и обработчиком фактически отсутствует. На самом деле, модификаторы реализованы в виде методов на элементе, и вы также можете определять пользовательские модификаторы.</p>
+</blockquote>
+<ul>
+<li><code>.stop</code> - предотвращает всплытие события</li>
+<li><code>.prevent</code> - вызывает preventDefault на событии</li>
+<li><code>.silence</code> - явно указывает Imba не передавать событие планировщикам ( schedulers )</li>
+<li><code>.self</code> - вызывать последующие обработчики только в том случае, если event.target - это сам элемент</li>
+</ul>
+<h3>Модификаторы клавиш</h3>
+<p>Для событий клавиатуры (keydown, keyup, keypress) также доступны некоторые очень полезные модификаторы.</p>
+<pre><code># Вызовите addItem, когда нажата клавиша Enter.
+&lt;input type='text' :keydown.enter.addItem&gt;
+
+# Допускается использовать несколько обработчиков для одного события.
+# Вызывайте обработчики gotoPrev и gotoNext, когда нажаты клавиши вверх/вниз.
+&lt;div :keydown.up.gotoPrev :keydown.down.gotoNext&gt;
+</code></pre>
+<ul>
+<li>.left</li>
+<li>.right</li>
+<li>.up</li>
+<li>.down</li>
+<li>.enter</li>
+<li>.tab</li>
+<li>.esc</li>
+<li>.space</li>
+<li>.del</li>
+</ul>
+<h3>Системные модификаторные клавиши</h3>
+<ul>
+<li>.ctrl</li>
+<li>.alt</li>
+<li>.shift</li>
+<li>.meta</li>
+</ul>
+<pre><code># Вызывайте обработчик только при нажатии клавиши Ctrl.
+&lt;button :click.ctrl.myHandler&gt;
+
+# only trigger when ctrl is pressed Shift
+&lt;button :click.shift.myHandler&gt;
+
+# Порядок модификаторов имеет значение;
+# Всегда предотвращайте действие по умолчанию, но вызывайте обработчик myHandler только в случае, если нажата клавиша Alt.
+&lt;button :click.prevent.alt.myHandler&gt;
+</code></pre>
+<h3>Модификаторы кнопок мыши</h3>
+<ul>
+<li>.left</li>
+<li>.right</li>
+<li>.middle</li>
+</ul>
+<h2>Объявление обработчиков по умолчанию</h2>
+<p>Когда событие обрабатывается в Imba, он также ищет метод <code>on(eventname)</code> на тегах по мере прохождения вверх от исходного элемента.</p>
+<pre><code>tag App
+    def onsubmit e
+        e.prevent
+        window.alert('Tried to submit!')
+
+    def render
+        &lt;self&gt;
+            &lt;form&gt;
+                &lt;input type='text'&gt;
+                &lt;button type='submit'&gt; &quot;Submit&quot;
+
+Imba.mount &lt;App&gt;
+</code></pre>
+<h2>Пользовательские события</h2>
+<h4><code>tag.trigger(name, data = null)</code></h4>
+<p>Пользовательские события будут всплывать, подобно встроенным событиям, однако они будут отправляться и обрабатываться непосредственно внутри системы событий Imba.Event, без генерации реального события браузера. По желанию, вы можете передать данные для события вторым аргументом. Вот довольно сложный пример, иллюстрирующий несколько способов работы с пользовательскими событиями.</p>
+<pre><code class="language-imba">tag Todo &lt; li
+    def clickRename
+        trigger('itemrename',data)
+
+    def clickTitle
+        trigger('itemtoggle',data)
+
+    def render
+        &lt;self .done=data:done&gt; 
+            &lt;span :tap.clickTitle&gt; data:title
+            &lt;button :tap.clickRename&gt; 'rename'
+
+tag Todos &lt; ul
+    def setup
+        @items = [
+            {title: &quot;Remember milk&quot;, done: false}
+            {title: &quot;Test custom events&quot;, done: false}
+        ]
+
+    # Внутренний элемент &quot;todo&quot; запускает пользовательское событие &quot;itemtoggle&quot; при касании, 
+	# которое будет всплывать вверх и, в конечном итоге, вызовет событие &quot;onitemtoggle&quot;.
+    def onitemtoggle e
+        e.data:done = !e.data:done
+
+    def onitemrename e
+        var todo = e.data
+        todo:title = window.prompt(&quot;New title&quot;,todo:title)
+
+    def render
+        &lt;self&gt; for item in @items
+            &lt;Todo[item]&gt;
+
+Imba.mount &lt;Todos&gt;
+</code></pre>
+<h2>Интерфейс событий</h2>
+<p>Imba обрабатывает все события в дереве DOM через единственный менеджер, прослушивающий события на корневом элементе вашего документа. Каждое встроенное событие оборачивается в экземпляр Imba.Event, который имеет несколько полезных методов, о которых стоит знать:</p>
+<pre><code class="language-imba">tag CustomElement
+    def onclick event
+        event.target # Возвращает целевой элемент Imba.Tag для события.
+        event.native # Возвращает встроенное DOM-событие (native DOMEvent).
+        event.type # Возвращает тип события, в данном случае - 'click'.
+        event.prevent # Вызывает метод preventDefault() на встроенном событии (native event).
+        event.stop # Вызывает метод stopPropagation() на встроенном событии (native event).
+
+        # Несколько методов для доступа к встроенному событию (native event):
+        event.x # Event:x
+        event.y # event.native:y
+        event.button # event.native:button
+        event.which # event.native:which
+        event.alt # event.native:altKey
+        event.shift # shiftKey
+        event.ctrl # event.native:ctrlKey
+        event.meta # event.native:metaKey
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>

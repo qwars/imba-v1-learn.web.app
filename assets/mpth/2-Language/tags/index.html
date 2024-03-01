@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Несмотря на то, что теги являются простыми обертками вокруг нативных элементов DOM, они имеют некоторую функциональность, которую стоит знать. Если вы хотите работать с элементом DOM напрямую, вы всегда можете получить доступ к нему через tag.dom. Элемент DOM также содержит ссылку на свою обертку Imba.Tag через domElement:_tag.">
+    <link rel="stylesheet" href="../../github.css">
+    <script defer src="../../index.js"></script>
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: undefined</div><h1>Теги</h1>
+<p>Несмотря на то, что теги являются простыми обертками вокруг нативных элементов DOM, они имеют некоторую функциональность, которую стоит знать. Если вы хотите работать с элементом DOM напрямую, вы всегда можете получить доступ к нему через tag.dom. Элемент DOM также содержит ссылку на свою обертку Imba.Tag через domElement:_tag.</p>
+<pre><code>var element = &lt;div.one.two&gt; &quot;Hello&quot;
+element # =&gt; Imba.Tag - thin wrapper
+element.dom # =&gt; HTMLDivElement - real dom element
+</code></pre>
+<blockquote>
+<p>imba.io полностью написан на Imba, и представления генерируются с использованием тегов. Тот же код рендерится как на сервере, так и на клиенте, используя одну и ту же логику для маршрутизации и т.д. Если вас интересует, исходный код доступен публично на <a href="https://github.com/somebee/imba.io">GitHub</a>.</p>
+</blockquote>
+<h2>Экземпляры</h2>
+<p>Вы можете рассматривать синтаксис тегов как очень краткий специализированный синтаксис для создания экземпляров определенного типа объектов. Точно так же, как [] является более коротким способом создания массива new Array().</p>
+<pre><code class="language-imba">var array = [] # shorthand for creating an array
+var node = &lt;div&gt; # shorthand for creating a div element
+
+&lt;div.one title='hello'&gt;
+# is really just shorthand for
+Imba.createElement('div').flag('one').setTitle('hello').end()
+</code></pre>
+<h2>Цикл жизни (Lifecycle)</h2>
+<p>Есть несколько методов, которые вы можете переопределить в пользовательских тегах, чтобы подключиться к циклу жизни тега. Здесь мы переопределим все эти методы в нашем пользовательском теге Example:</p>
+<pre><code class="language-imba">tag Example
+    def build
+        # Вызывается один раз до установки свойств
+        # Установка переменной экземпляра &quot;counter&quot;
+        @counter = 0
+
+    def setup
+        # Вызывается один раз после установки свойств
+
+    def mount
+        # Вызывается, когда тег был добавлен в документ
+        # Запланировать вызов метода &quot;tick&quot; тега каждые 1000 мс (1 секунда)
+        schedule(interval: 1000)
+
+    def unmount
+        # Вызывается, когда тег был удален из документа
+        # Снятие планирования для выполнения метода schedule в tag
+        unschedule
+
+    def tick
+        # Вызывается, если тег запланирован и планировщик активен
+        # По умолчанию выполняется вызов render
+        render
+
+    def render
+        # внутреннее представление
+        &lt;self.bar&gt;
+            &lt;strong&gt; &quot;Title: {data:name}&quot;
+            &lt;em&gt; &quot;Counting {@counter++}&quot;
+
+# Установить экземпляр тега Example с некоторыми данными
+Imba.mount &lt;Example[{name: &quot;Lifecycle&quot;}]&gt;
+</code></pre>
+<h2>Интерфейс</h2>
+<pre><code class="language-imba">tag Example
+    def interface
+        dom # Доступ к нативному элементу DOM
+</code></pre>
+<h2>Планирование ( Scheduling )</h2>
+<p>Когда вы монтируете тег с помощью Imba.mount, обычно вам не нужно задумываться о планировании.</p>
+<h4>Default scheduling</h4>
+<pre><code class="language-imba">var counter = 0
+var status = &quot;Hello&quot;
+
+tag App
+    def doSomething
+        self
+
+    def loadAsync
+        status = &quot;loading&quot;
+        Promise.new do |resolve|
+            setTimeout(&amp;,500) do
+                resolve(status = &quot;loaded&quot;)
+
+    def render
+        &lt;self.bar&gt;
+            &lt;button&gt; &quot;noop&quot;
+            &lt;button :tap.doSomething&gt; &quot;handle&quot; 
+            &lt;button :tap.loadAsync&gt; &quot;async&quot;
+            &lt;div&gt; &quot;Rendered: {++counter}&quot;
+            &lt;div&gt; &quot;Status: {status}&quot;
+
+# when mounting a node with Imba.mount it will automatically
+# be scheduled to render after dom events and Imba.commit
+Imba.mount &lt;App&gt;
+</code></pre>
+<p>Хотя большинство изменений состояния вашего приложения происходит в результате взаимодействия пользователя, все же есть несколько мест, где вам нужно уведомить Imba, что что-то изменилось. Например, если вы получаете данные из сокета, вы можете вызвать Imba.commit после получения сообщений socket.addEventListener('message', Imba.commit), и если вы получаете данные с сервера вне обработчиков событий, вы можете вызвать Imba.commit в конце операции получения данных.</p>
+<h4>Рендеринг каждого кадра</h4>
+<pre><code class="language-imba">tag App
+    def mount
+        schedule(raf: true)
+
+    def onmousemove e
+        @x = e.x
+        @y = e.y
+
+    def render
+        &lt;self.bar&gt;
+            &lt;div&gt; &quot;Mouse is at {@x or 0} {@y or 0}&quot;
+
+Imba.mount &lt;App&gt;
+</code></pre>
+<h4>Рендеринг с интервалами</h4>
+<pre><code class="language-imba">tag Clock
+    def mount
+        schedule(interval: 1000)
+
+    def render
+        &lt;self&gt; Date.new.toLocaleString
+
+Imba.mount &lt;Clock&gt;
+</code></pre>
+
+      </div>
+    </div>
+  </body>
+</html>
