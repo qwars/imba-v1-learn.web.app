@@ -1,7 +1,8 @@
 
-const content = require '../guides/1-Essentials/introduction.md'
+window.fetch(require '../guides/1-Essentials/introduction.md').then do|response|
+	response and response.text.then do|resource|
+			Imba.commit Imba:Content = MarkdownIt.render resource
 
-const introduction = MarkdownIt.render content
 
 export tag Aside < aside
 	@classes = ['']
@@ -12,7 +13,7 @@ export tag Nav < nav
 	@classes = ['']
 
 	def scrollInto point
-		for item in  document.querySelectorAll 'h2'
+		for item in  document.querySelectorAll 'h1, h2'
 			if item:textContent === point:textContent
 				item.scrollIntoView
 					behavior: 'smooth'
@@ -20,11 +21,9 @@ export tag Nav < nav
 
 	def render
 		<self>
-			<ul> for item in document.querySelectorAll 'h2'
-				<li :tap.scrollInto( item )> item:textContent
 
 export tag Article < article
 	@classes = ['']
 
 	def render
-		<self html=introduction>
+		<self html=Imba:Content>
