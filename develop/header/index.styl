@@ -20,3 +20,11 @@ header
 	& > nav
 		display: flex
 		gap: 1rem
+		a
+			font: var( --title-font )
+			font-size: large
+
+@media (prefers-color-scheme: dark)
+	header > a > span > svg *
+		fill: var(--text-color)
+		opacity: 1 !important

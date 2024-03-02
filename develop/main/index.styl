@@ -4,6 +4,7 @@ main
 	grid-template-rows: auto 1fr
 	grid-template-columns: auto 1fr auto
 	grid-template-areas: "menu menu menu" "nav article aside"
+	gap: 1ex 1em
 
 	& > menu
 		padding: 0px
@@ -12,11 +13,49 @@ main
 
 	& > nav
 		grid-area: nav
+		width: 320px
+		ul
+			padding-inline-start: 2em
+			li
+				cursor: pointer
 
 	& > article
 		grid-area: article
-		display: grid
 		align-items: stretch
+		min-height: stretch
+		height: 0px
+		margin-right: -1em
+		padding-right: 1em
+		overflow: hidden auto
+		pre
+			border: 1px solid var(--border-color)
+			border-radius: .5ex
+			padding: 1em
+
+		blockquote
+			padding: 1ex 1em
+			border: 1px solid var( --info-color )
+			margin-inline-start: 0px
+			margin-inline-end: 0px
+			border-radius: .5ex
+			padding-left: 3em
+			p
+				margin-block-start: 0px
+				margin-block-end: 0px
+
+			&:before
+				content: '\24d8'
+				float: left
+				font-size: x-large
+				font-weight: bold
+				color: var( --info-color )
+				margin-left: -1.5em
+				line-height: 1.1rem
+
+	& > section
+		grid-area: article
+		place-self: center
+		max-width: 1024px
 
 	& > aside
 		grid-area: aside
